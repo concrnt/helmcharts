@@ -181,7 +181,7 @@ spec:
           - name: POSTGRES_PASSWORD
             value: postgres
           - name: POSTGRES_DB
-            value: concurrent
+            value: concrnt
         volumeMounts:
           - name: postgres-varlib
             mountPath: /var/lib/postgresql
