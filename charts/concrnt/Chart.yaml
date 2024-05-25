@@ -1,7 +1,7 @@
 apiVersion: v2
 appVersion: "0.0.0"
 description: A Helm chart for concurrent
-name: concurrent
+name: concrnt
 version: 0.0.1
 dependencies:
   - name: url-summary
