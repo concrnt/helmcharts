@@ -1,0 +1,342 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ccgateway
+  template:
+    metadata:
+      labels:
+        name: ccgateway
+    spec:
+      containers:
+      - name: ccgateway
+        image: {{ .Values.concrnt.gatewayimage }}
+        ports:
+          - containerPort: 8080
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        volumeMounts:
+          - name: concrnt-config
+            mountPath: /etc/concrnt/config
+            readOnly: true
+          - name: concrnt-static
+            mountPath: /etc/concrnt/static
+            readOnly: true
+      volumes:
+        - name: concrnt-config
+          configMap:
+            name: concrnt-config
+        - name: concrnt-static
+          configMap:
+            name: concrnt-static
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ccapi
+  template:
+    metadata:
+      labels:
+        name: ccapi
+    spec:
+      containers:
+      - name: ccapi
+        image: {{ .Values.concrnt.appimage }}
+        ports:
+          - containerPort: 8000
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        volumeMounts:
+          - name: concrnt-config
+            mountPath: /etc/concrnt/config
+          - name: repository
+            mountPath: /var/lib/concrnt
+      volumes:
+        - name: concrnt-config
+          configMap:
+            name: concrnt-config
+        - name: repository
+          persistentVolumeClaim:
+            claimName: concrnt-repository
+
+
+
+---
+
+{{- if .Values.activitypub.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccactivitypub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ccactivitypub
+  template:
+    metadata:
+      labels:
+        name: ccactivitypub
+    spec:
+      containers:
+      - name: ccactivitypub
+        image: {{ .Values.activitypub.image }}
+        ports:
+          - containerPort: 8000
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        volumeMounts:
+          - name: activitypub-config
+            mountPath: /etc/concurrent
+      volumes:
+        - name: activitypub-config
+          configMap:
+            name: activitypub-config
+            items:
+            - key: config.yaml
+              path: config.yaml
+              mode: 0644
+{{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccwebui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ccwebui
+  template:
+    metadata:
+      labels:
+        name: ccwebui
+    spec:
+      containers:
+      - name: ccwebui
+        image: {{ .Values.concrnt.webimage }}
+        ports:
+          - containerPort: 80
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /web/index.html
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 3
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: concurrent-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: concurrent-db
+  template:
+    metadata:
+      labels:
+        name: concurrent-db
+    spec:
+      containers:
+      - name: posgresql
+        image: postgres
+        ports:
+          - containerPort: 5432
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            value: postgres
+          - name: POSTGRES_DB
+            value: concurrent
+        volumeMounts:
+          - name: postgres-varlib
+            mountPath: /var/lib/postgresql
+      volumes:
+        - name: postgres-varlib
+          persistentVolumeClaim:
+            claimName: postgres-varlib
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: concurrent-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: concurrent-redis
+  template:
+    metadata:
+      labels:
+        name: concurrent-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        ports:
+          - containerPort: 6379
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: redis-data
+            mountPath: /data
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: redis-data
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: concurrent-memcached
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: concurrent-memcached
+  template:
+    metadata:
+      labels:
+        name: concurrent-memcached
+    spec:
+      containers:
+      - name: memcached
+        image: memcached
+        ports:
+          - containerPort: 11211
+        imagePullPolicy: IfNotPresent
+
+---
+
+{{- if .Values.monitoring.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: grafana-agent
+  template:
+    metadata:
+      labels:
+        name: grafana-agent
+    spec:
+      containers:
+      - name: agent
+        image: grafana/agent
+        ports:
+          - containerPort: 4318
+        imagePullPolicy: Always
+        volumeMounts:
+          - mountPath: /etc/agent/agent.yaml
+            name: observability-config
+            subPath: agent.yaml
+
+      - name: postgres-exporter
+        image: quay.io/prometheuscommunity/postgres-exporter
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: DATA_SOURCE_NAME
+            value: "postgresql://postgres:postgres@db:5432/postgres?sslmode=disable"
+
+      - name: redis-exporter
+        image: oliver006/redis_exporter:v1.6.0-alpine
+        imagePullPolicy: IfNotPresent
+        args:
+          - "--redis.addr=redis://redis:6379"
+
+      - name: memcached-exporter
+        image: prom/memcached-exporter:v0.6.0
+        imagePullPolicy: IfNotPresent
+        args:
+          - '--memcached.address=memcached:11211'
+
+      volumes:
+        - name: observability-config
+          configMap:
+            name: observability-config
+            items:
+            - key: agent.yaml
+              path: agent.yaml
+              mode: 0644
+{{- end }}
+
+---
+{{ if .Values.mediaserver.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mediaserver
+  template:
+    metadata:
+      labels:
+        name: mediaserver
+    spec:
+      containers:
+      - name: mediaserver
+        image: {{ .Values.mediaserver.image }}
+        ports:
+          - containerPort: 8000
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: bucketName
+            value: {{ .Values.mediaserver.bucketName | quote }}
+          - name: endpointUrl
+            value: {{ .Values.mediaserver.endpointUrl | quote }}
+          - name: accessKeyId
+            value: {{ .Values.mediaserver.accessKeyId | quote }}
+          - name: accessKeySecret
+            value: {{ .Values.mediaserver.accessKeySecret | quote }}
+          - name: publicBaseUrl
+            value: {{ .Values.mediaserver.publicBaseUrl | quote }}
+          - name: db_dsn
+            value: {{ .Values.server.dsn | quote }}
+          - name: quota
+            value: {{ .Values.mediaserver.quota | quote }}
+          - name: region
+            value: {{ .Values.mediaserver.region | quote }}
+{{ end }}

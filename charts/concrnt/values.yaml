@@ -1,0 +1,116 @@
+server:
+  dsn: "host=db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
+  redisAddr: "redis:6379"
+  memcachedAddr: "memcached:11211"
+  captchaSitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+  captchaSecret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+  dbstorage: "1Gi"
+  redisstorage: "1Gi"
+  repositoryStorage: "1Gi"
+
+profile:
+  nickname: concrnt-domain
+  description: domain description
+  logo: ""
+  wordmark: ""
+  themeColor: "#20193b"
+  tosURL: ""
+  maintainerName: changeme
+  maintainerEmail: changeme@example.com
+
+backup:
+  enabled: true
+  cron: "* 20 * * *"
+  s3key: "s3://examplebucket/"
+  aws_access_key_id: ""
+  aws_secret_access_key: ""
+  aws_default_region: "ap-northeast-1"
+
+monitoring:
+  enabled: false
+  metrics:
+    enabled: false
+    endpoint: ""
+    password: ""
+    username: ""
+  traces:
+    enabled: false
+    endpoint: ""
+    password: ""
+    username: ""
+
+concrnt:
+  appimage: ghcr.io/totegamma/ccapi:latest
+  gatewayimage: ghcr.io/totegamma/ccgateway:latest
+  webimage: ghcr.io/totegamma/ccwebui:latest
+  fqdn: example.tld
+  registration: invite
+  privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  dimension: concrnt-devnet
+
+mediaserver:
+  enabled: false
+  image: ghcr.io/totegamma/cc-media-server:main
+  bucketName: YOUR_BUCKET_NAME
+  endpointUrl: https://xxxxxx.r2.cloudflarestorage.com
+  accessKeyId: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  accessKeySecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  publicBaseUrl: https://pub-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.r2.dev/
+  region: auto
+  quota: "1000000000"
+
+activitypub:
+  enabled: false
+  image: ghcr.io/totegamma/ccworld-ap-bridge:latest
+  privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+url-summary:
+  enabled: true
+  LB_LISTEN_PORT: 80
+  APP_TARGET_PORT: 8080
+  CORS: ""
+  LB_TYPE: ClusterIP
+
+legal:
+  tos: ""
+  registerTemplate: |
+    {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "名前",
+          "description": "ご連絡が必要になった場合に用いる宛名　ハンドルネーム推奨"
+        },
+        "email": {
+          "type": "string",
+          "title": "メールアドレス",
+          "description": "最終的なご連絡先"
+        },
+        "social": {
+          "type": "string",
+          "title": "その他連絡先",
+          "description": "TwitterやMisskeyやMastodonなど"
+        },
+        "consent": {
+          "type": "boolean",
+          "title": "利用規約・行動規範およびプライバシーポリシーに同意します",
+          "default": null,
+          "enum": [
+            null,
+            true
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "consent"
+      ]
+    }
+  codeOfConduct: |
+    1. サーバーは日本国内に設置されています。日本の法律に従ってください。
+    2. 他者へのリスペクトを忘れないようにしましょう。
+    3. ユーザー名・アイコン・ステータスメッセージなどは他者を不快にさせるようなものは控え、投稿も内容によっては公開範囲をコントロールしましょう。
+    4. コミュニティタイムラインでは、そのコミュニティの趣旨をくみ取り、適切な投稿を心がけましょう。
+

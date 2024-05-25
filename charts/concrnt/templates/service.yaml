@@ -1,0 +1,146 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ccgateway
+  labels:
+    name: ccgateway
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    name: ccgateway
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ccapi
+  labels:
+    name: ccapi
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+  selector:
+    name: ccapi
+  type: ClusterIP
+
+---
+
+{{- if .Values.activitypub.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: ccactivitypub
+  labels:
+    name: ccactivitypub
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+  selector:
+    name: ccactivitypub
+  type: ClusterIP
+{{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ccwebui
+  labels:
+    name: ccwebui
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    name: ccwebui
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  labels:
+    name: concurrent-db
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+  selector:
+    name: concurrent-db
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    name: concurrent-redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+  selector:
+    name: concurrent-redis
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memcached
+  labels:
+    name: concurrent-memcached
+spec:
+  ports:
+  - port: 11211
+    protocol: TCP
+  selector:
+    name: concurrent-memcached
+  type: ClusterIP
+
+---
+
+{{- if .Values.monitoring.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-agent
+  labels:
+    name: grafana-agent
+spec:
+  ports:
+  - port: 4318
+    protocol: TCP
+  selector:
+    name: grafana-agent
+  type: ClusterIP
+{{- end }}
+
+---
+
+{{ if .Values.mediaserver.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediaserver
+  labels:
+    name: mediaserver
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+  selector:
+    name: mediaserver
+  type: ClusterIP
+{{ end }}

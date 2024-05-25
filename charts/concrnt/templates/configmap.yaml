@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: concrnt-config
+data:
+  config.yaml: |-
+    server:
+      dsn: {{ .Values.server.dsn }}
+      redisAddr: {{ .Values.server.redisAddr }}
+      memcachedAddr: {{ .Values.server.memcachedAddr }}
+      traceEndpoint: "grafana-agent:4318"
+      enableTrace: true
+      repositoryPath: "/var/lib/concrnt"
+      captchaSitekey: {{ .Values.server.captchaSitekey }}
+      captchaSecret: {{ .Values.server.captchaSecret }}
+
+    concrnt:
+      fqdn: {{ .Values.concrnt.fqdn }}
+      registration: {{ .Values.concrnt.registration }}
+      privatekey: {{ .Values.concrnt.privatekey }}
+      dimension: {{ .Values.concrnt.dimension }}
+
+    profile:
+      nickname: {{ .Values.profile.nickname }}
+      description: {{ .Values.profile.description }}
+      logo: {{ .Values.profile.logo }}
+      wordmark: {{ .Values.profile.wordmark }}
+      themeColor: {{ .Values.profile.themeColor | quote }}
+      maintainerName: {{ .Values.profile.maintainerName }}
+      maintainerEmail: {{ .Values.profile.maintainerEmail }}
+
+  gateway.yaml: |-
+    services:
+      - name: webui
+        host: ccwebui
+        port: 80
+        path: /web
+        preservePath: true
+      - name: conctnt
+        host: ccapi
+        port: 8000
+        path: /api/v1
+        injectCors: true
+{{- if .Values.activitypub.enabled }}
+      - name: activitypub
+        host: ccactivitypub
+        port: 8000
+        path: /ap
+        preservePath: true
+        injectCors: true
+      - name: webfinger
+        host: ccactivitypub
+        port: 8000
+        path: /.well-known
+        preservePath: true
+{{- end }}
+{{- if (index .Values "url-summary" "enabled") }}
+      - name: url-summary
+        host: url-summary-lb
+        port: {{ (index .Values "url-summary" "LB_LISTEN_PORT") }}
+        path: /summary
+{{- end }}
+{{- if .Values.mediaserver.enabled }}
+      - name: mediaserver
+        host: mediaserver
+        port: 8000
+        path: /storage
+{{- end}}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: concrnt-static
+data:
+  tos.txt: |-
+    {{ .Values.legal.tos | nindent 4 }}
+  register-template.json: |-
+    {{ .Values.legal.registerTemplate | nindent 4 }}
+  code-of-conduct.txt: |-
+    {{ .Values.legal.codeOfConduct | nindent 4 }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: activitypub-config
+data:
+  config.yaml: |-
+    proxy:
+      fqdn: {{ .Values.concrnt.fqdn }}
+      proxyPriv: {{ .Values.activitypub.privatekey }}
+
+    server:
+      dsn: {{ .Values.server.dsn }}
+      redisAddr: {{ .Values.server.redisAddr }}
+      memcachedAddr: {{ .Values.server.memcachedAddr }}
+      traceEndpoint: "grafana-agent:4318"
+      enableTrace: true
+      repositoryPath: "/var/lib/concrnt"
+      captchaSitekey: {{ .Values.server.captchaSitekey }}
+      captchaSecret: {{ .Values.server.captchaSecret }}
+
+    nodeInfo:
+      openRegistration: {{ .Values.concrnt.registration }}
+      metadata:
+        nodeName: {{ .Values.profile.nickname }}
+        nodeDescription: {{ .Values.profile.description }}
+        maintainer:
+          name: {{ .Values.profile.maintainerName }}
+          email: {{ .Values.profile.maintainerEmail }}
+        themeColor: {{ .Values.profile.themeColor | quote }}
+
+---
+
+{{- if .Values.monitoring.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: observability-config
+data:
+  agent.yaml: |-
+    server:
+      log_level: debug
+
+{{- if .Values.monitoring.metrics.enabled }}
+    metrics:
+      configs:
+        - name: default
+          scrape_configs:
+          - job_name: "concrnt"
+            static_configs:
+              - targets:
+                - 'ccgateway:80'
+                - 'ccapi:8000'
+                - 'localhost:9187' # postgres-exporter
+                - 'localhost:9121' # redis-exporter
+                - 'localhost:9150' # memcached-exporter
+                labels:
+                  instance: {{ .Values.concrnt.fqdn | quote }}
+          remote_write:
+            - url: {{ .Values.monitoring.metrics.endpoint }}
+              basic_auth:
+                username: {{ .Values.monitoring.metrics.username }}
+                password: {{ .Values.monitoring.metrics.password }}
+{{- end }}
+{{- if .Values.monitoring.traces.enabled }}
+    traces:
+      configs:
+      - name: default
+        receivers:
+          otlp:
+            protocols:
+              http:
+                endpoint: 0.0.0.0:4318
+        remote_write:
+          - endpoint: {{ .Values.monitoring.traces.endpoint }}
+            basic_auth:
+              username: {{ .Values.monitoring.traces.username }}
+              password: {{ .Values.monitoring.traces.password }}
+        batch:
+          timeout: 5s
+          send_batch_size: 100
+{{- end }}
+{{- end }}
