@@ -11,7 +11,7 @@ spec:
     protocol: TCP
   selector:
     name: ccgateway
-  type: LoadBalancer
+  type: {{ .Values.concrnt.servicetype }}
 
 ---
 apiVersion: v1

@@ -43,10 +43,11 @@ concrnt:
   appimage: ghcr.io/totegamma/ccapi:latest
   gatewayimage: ghcr.io/totegamma/ccgateway:latest
   webimage: ghcr.io/totegamma/ccwebui:latest
+  servicetype: ClusterIP
   fqdn: example.tld
   registration: invite
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  dimension: concrnt-devnet
+  dimension: concrnt-mainnet
 
 mediaserver:
   enabled: false
@@ -61,11 +62,11 @@ mediaserver:
 
 activitypub:
   enabled: false
-  image: ghcr.io/totegamma/ccworld-ap-bridge:latest
+  image: ghcr.io/concrnt/ccworld-ap-bridge:latest
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 url-summary:
-  enabled: true
+  enabled: false
   LB_LISTEN_PORT: 80
   APP_TARGET_PORT: 8080
   CORS: ""
