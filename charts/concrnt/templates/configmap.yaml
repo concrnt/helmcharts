@@ -89,7 +89,7 @@ metadata:
   name: activitypub-config
 data:
   apconfig.yaml: |-
-    proxy:
+    apConfig:
       fqdn: {{ .Values.concrnt.fqdn }}
       proxyPriv: {{ .Values.activitypub.privatekey }}
 
