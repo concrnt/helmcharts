@@ -113,7 +113,7 @@ spec:
           periodSeconds: 3
         volumeMounts:
           - name: activitypub-config
-            mountPath: /etc/concrcnt/config
+            mountPath: /etc/concrnt/config
       volumes:
         - name: activitypub-config
           configMap:
