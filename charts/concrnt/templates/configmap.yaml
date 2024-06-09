@@ -36,7 +36,7 @@ data:
         port: 80
         path: /web
         preservePath: true
-      - name: conctnt
+      - name: concrnt
         host: ccapi
         port: 8000
         path: /api/v1
