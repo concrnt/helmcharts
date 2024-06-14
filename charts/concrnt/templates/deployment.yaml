@@ -180,7 +180,7 @@ spec:
             value: concrnt
         volumeMounts:
           - name: postgres-varlib
-            mountPath: /var/lib/postgresql
+            mountPath: /var/lib/postgresql/data
       volumes:
         - name: postgres-varlib
           persistentVolumeClaim:
