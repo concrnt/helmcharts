@@ -19,8 +19,8 @@ profile:
   maintainerEmail: changeme@example.com
 
 backup:
-  enabled: true
-  cron: "* 20 * * *"
+  enabled: false
+  cron: "0 20 * * *"
   s3key: "s3://examplebucket/"
   aws_access_key_id: ""
   aws_secret_access_key: ""
