@@ -180,7 +180,7 @@ spec:
             value: concrnt
         volumeMounts:
           - name: postgres-varlib
-            mountPath: /var/lib/postgresql/data
+            mountPath: {{ .Values.server.dbMountPath }}
       volumes:
         - name: postgres-varlib
           persistentVolumeClaim:

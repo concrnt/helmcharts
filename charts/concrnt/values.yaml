@@ -5,6 +5,7 @@ server:
   captchaSitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
   captchaSecret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
   dbstorage: "1Gi"
+  dbMountPath: "/var/lib/postgresql/data"
   redisstorage: "1Gi"
   repositoryStorage: "1Gi"
 
