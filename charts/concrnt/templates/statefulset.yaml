@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: concurrent-db
+spec:
+  replicas: 1
+  serviceName: concurrent-db
+  selector:
+    matchLabels:
+      name: concurrent-db
+  template:
+    metadata:
+      labels:
+        name: concurrent-db
+    spec:
+      containers:
+        - name: posgresql
+          image: postgres
+          ports:
+            - containerPort: 5432
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: concrnt
+          volumeMounts:
+            - name: postgres-varlib
+              mountPath: {{ .Values.server.dbMountPath }}
+      volumes:
+        - name: postgres-varlib
+          persistentVolumeClaim:
+            claimName: postgres-varlib
