@@ -167,7 +167,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: redis
+        image: redis:7-bookworm
         ports:
           - containerPort: 6379
         imagePullPolicy: IfNotPresent
@@ -197,7 +197,7 @@ spec:
     spec:
       containers:
       - name: memcached
-        image: memcached
+        image: memcached:1.6-bookworm
         ports:
           - containerPort: 11211
         imagePullPolicy: IfNotPresent
