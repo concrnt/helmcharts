@@ -68,12 +68,10 @@ activitypub:
   image: ghcr.io/concrnt/ccworld-ap-bridge:latest
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-url-summary:
-  enabled: false
-  LB_LISTEN_PORT: 80
-  APP_TARGET_PORT: 8080
-  CORS: ""
-  LB_TYPE: ClusterIP
+hyperproxy:
+  enabled: true
+  image: ghcr.io/concrnt/hyperproxy:latest
+  port: 8080
 
 legal:
   tos: ""

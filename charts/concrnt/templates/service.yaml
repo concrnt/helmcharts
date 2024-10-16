@@ -144,3 +144,19 @@ spec:
     name: mediaserver
   type: ClusterIP
 {{ end }}
+
+---
+{{- if .Values.hyperproxy.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: hyperproxy
+spec:
+  selector:
+    name: hyperproxy
+  ports:
+    - protocol: TCP
+      port: {{ .Values.hyperproxy.port }}
+  type: ClusterIP
+{{- end }}
+

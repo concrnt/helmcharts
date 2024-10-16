@@ -299,3 +299,31 @@ spec:
           - name: region
             value: {{ .Values.mediaserver.region | quote }}
 {{ end }}
+
+---
+{{ if .Values.hyperproxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hyperproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: hyperproxy
+  template:
+    metadata:
+      labels:
+        name: hyperproxy
+    spec:
+      containers:
+        - name: hyperproxy
+          image: {{ .Values.hyperproxy.image }}
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: 8000
+            - name: MEMCACHED_HOST
+              value: {{ .Values.server.memcachedAddr | quote }}
+{{ end }}
+

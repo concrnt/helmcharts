@@ -54,18 +54,26 @@ data:
         path: /.well-known
         preservePath: true
 {{- end }}
-{{- if (index .Values "url-summary" "enabled") }}
-      - name: url-summary
-        host: url-summary-lb
-        port: {{ (index .Values "url-summary" "LB_LISTEN_PORT") }}
+{{- if .Values.hyperproxy.enabled }}
+      - name: hyperproxy-summary
+        host: hyperproxy
+        port: 8000
         path: /summary
+        preservePath: true
+{{- end }}
+{{- if .Values.hyperproxy.enabled }}
+      - name: hyperproxy-image
+        host: hyperproxy
+        port: 8000
+        path: /image
+        preservePath: true
 {{- end }}
 {{- if .Values.mediaserver.enabled }}
       - name: mediaserver
         host: mediaserver
         port: 8000
         path: /storage
-{{- end}}
+{{- end }}
 
 ---
 
