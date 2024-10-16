@@ -60,6 +60,7 @@ data:
         port: 8000
         path: /summary
         preservePath: true
+        injectCors: true
 {{- end }}
 {{- if .Values.hyperproxy.enabled }}
       - name: hyperproxy-image
@@ -67,6 +68,7 @@ data:
         port: 8000
         path: /image
         preservePath: true
+        injectCors: true
 {{- end }}
 {{- if .Values.mediaserver.enabled }}
       - name: mediaserver
