@@ -322,7 +322,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: PORT
-              value: 8000
+              value: "8000"
             - name: MEMCACHED_HOST
               value: {{ .Values.server.memcachedAddr | quote }}
 {{ end }}
