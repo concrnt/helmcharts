@@ -156,7 +156,7 @@ spec:
     name: hyperproxy
   ports:
     - protocol: TCP
-      port: {{ .Values.hyperproxy.port }}
+      port: 8000
   type: ClusterIP
 {{- end }}
 

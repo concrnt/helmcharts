@@ -71,7 +71,6 @@ activitypub:
 hyperproxy:
   enabled: true
   image: ghcr.io/concrnt/hyperproxy:latest
-  port: 8080
 
 legal:
   tos: ""
