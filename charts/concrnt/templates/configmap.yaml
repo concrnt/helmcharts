@@ -210,15 +210,11 @@ data:
         port: 8000
         path: /summary
         preservePath: true
-        injectCors: true
-{{- end }}
-{{- if .Values.hyperproxy.enabled }}
       - name: world.concrnt.hyperproxy.image
         host: hyperproxy
         port: 8000
         path: /image
         preservePath: true
-        injectCors: true
 {{- end }}
 {{- if .Values.mediaserver.enabled }}
       - name: world.concrnt.mediaserver
