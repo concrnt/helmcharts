@@ -3,6 +3,15 @@ entries:
   concrnt:
   - apiVersion: v2
     appVersion: 0.0.0
+    created: "2024-11-02T07:18:44.712213764Z"
+    description: A Helm chart for concurrent
+    digest: 31af7fcafc449507343714cc78dc1f6408cb5172f971a004c036ccda784b018e
+    name: concrnt
+    urls:
+    - https://github.com/concrnt/helmcharts/releases/download/concrnt-0.4.1/concrnt-0.4.1.tgz
+    version: 0.4.1
+  - apiVersion: v2
+    appVersion: 0.0.0
     created: "2024-10-20T14:06:08.576213508Z"
     description: A Helm chart for concurrent
     digest: f7b827ca0b4c2890fee6bef3052eb5f1019f4a4eae6c85938caf6702c63135ba
@@ -228,4 +237,4 @@ entries:
     urls:
     - https://github.com/concrnt/helmcharts/releases/download/concrnt-0.0.1/concrnt-0.0.1.tgz
     version: 0.0.1
-generated: "2024-10-20T14:06:08.576369259Z"
+generated: "2024-11-02T07:18:44.712320954Z"
