@@ -9,10 +9,12 @@ data:
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
       traceEndpoint: "grafana-agent:4318"
-      enableTrace: true
+      enableTrace: {{ .Values.monitoring.traces.enabled }}
       repositoryPath: "/var/lib/concrnt"
       captchaSitekey: {{ .Values.server.captchaSitekey }}
       captchaSecret: {{ .Values.server.captchaSecret }}
+      vapidPublicKey: {{ .Values.server.vapidPublicKey | quote }}
+      vapidPrivateKey: {{ .Values.server.vapidPrivateKey | quote }}
 
     concrnt:
       fqdn: {{ .Values.concrnt.fqdn }}
@@ -254,7 +256,7 @@ data:
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
       traceEndpoint: "grafana-agent:4318"
-      enableTrace: true
+      enableTrace: {{ .Values.monitoring.traces.enabled }}
       repositoryPath: "/var/lib/concrnt"
       captchaSitekey: {{ .Values.server.captchaSitekey }}
       captchaSecret: {{ .Values.server.captchaSecret }}

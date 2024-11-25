@@ -4,6 +4,8 @@ server:
   memcachedAddr: "memcached:11211"
   captchaSitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
   captchaSecret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+  vapidPublicKey: ""
+  vapidPrivateKey: ""
   dbstorage: "1Gi"
   dbMountPath: "/var/lib/postgresql/data"
   redisstorage: "1Gi"
