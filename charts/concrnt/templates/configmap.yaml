@@ -248,6 +248,7 @@ metadata:
 data:
   apconfig.yaml: |-
     apConfig:
+      apiAddr: ccgateway
       fqdn: {{ .Values.concrnt.fqdn }}
       proxyPriv: {{ .Values.activitypub.privatekey }}
 
