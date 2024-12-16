@@ -248,11 +248,11 @@ metadata:
 data:
   apconfig.yaml: |-
     apConfig:
-      apiAddr: ccgateway
       fqdn: {{ .Values.concrnt.fqdn }}
       proxyPriv: {{ .Values.activitypub.privatekey }}
 
     server:
+      apiAddr: ccgateway
       dsn: {{ .Values.server.dsn }}
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
