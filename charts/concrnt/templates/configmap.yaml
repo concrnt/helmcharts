@@ -297,6 +297,9 @@ data:
                 - 'localhost:9187' # postgres-exporter
                 - 'localhost:9121' # redis-exporter
                 - 'localhost:9150' # memcached-exporter
+{{- if .Values.hyperproxy.enabled }}
+                - 'hyperproxy:8000'
+{{- end }}
                 labels:
                   instance: {{ .Values.concrnt.fqdn | quote }}
           remote_write:
