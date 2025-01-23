@@ -35,7 +35,7 @@ spec:
           image: quay.io/prometheuscommunity/postgres-exporter
           imagePullPolicy: IfNotPresent
           ports:
-            - name: postgres-exporter
+            - name: postgres-expr
               containerPort: 9187
           env:
             - name: DATA_SOURCE_NAME

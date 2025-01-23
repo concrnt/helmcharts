@@ -57,7 +57,7 @@ spec:
     matchLabels:
       name: postgres
   podMetricsEndpoints:
-    - port: postgres-exporter
+    - port: postgres-expr
 
 ---
 # redis
