@@ -49,13 +49,13 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: concurrent-db
+  name: concrnt-postgres
   labels:
     release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
-      name: postgres
+      name: concurrent-db
   podMetricsEndpoints:
     - port: postgres-expr
 
@@ -64,13 +64,13 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: concurrent-redis
+  name: concrnt-redis
   labels:
     release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
-      name: redis
+      name: concurrent-redis
   podMetricsEndpoints:
     - port: redis-exporter
 
