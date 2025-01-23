@@ -16,7 +16,8 @@ spec:
       - name: ccgateway
         image: {{ .Values.concrnt.gatewayimage }}
         ports:
-          - containerPort: 8080
+          - name: web
+            containerPort: 8080
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -59,7 +60,8 @@ spec:
       - name: ccapi
         image: {{ .Values.concrnt.appimage }}
         ports:
-          - containerPort: 8000
+          - name: web
+            containerPort: 8000
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -103,7 +105,8 @@ spec:
       - name: ccactivitypub
         image: {{ .Values.activitypub.image }}
         ports:
-          - containerPort: 8000
+          - name: web
+            containerPort: 8000
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -140,7 +143,8 @@ spec:
       - name: ccwebui
         image: {{ .Values.concrnt.webimage }}
         ports:
-          - containerPort: 80
+          - name: web
+            containerPort: 80
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -169,11 +173,22 @@ spec:
       - name: redis
         image: redis:7-bookworm
         ports:
-          - containerPort: 6379
+          - name: redis
+            containerPort: 6379
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - name: redis-data
             mountPath: /data
+{{- if .Values.observability.enabled }}
+      - name: redis-exporter
+        image: oliver006/redis_exporter:v1.6.0-alpine
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: redis-exporter
+            containerPort: 9121
+        args:
+          - "--redis.addr=redis://localhost:6379"
+{{- end }}
       volumes:
         - name: redis-data
           persistentVolumeClaim:
@@ -199,8 +214,19 @@ spec:
       - name: memcached
         image: memcached:1.6-bookworm
         ports:
-          - containerPort: 11211
+          - name: memcached
+            containerPort: 11211
         imagePullPolicy: IfNotPresent
+{{- if .Values.observability.enabled }}
+      - name: memcached-exporter
+        image: prom/memcached-exporter:v0.6.0
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: memcached-exporter
+            containerPort: 9150
+        args:
+          - '--memcached.address=localhost:11211'
+{{- end }}
 
 ---
 
@@ -279,7 +305,8 @@ spec:
       - name: mediaserver
         image: {{ .Values.mediaserver.image }}
         ports:
-          - containerPort: 8000
+          - name: web
+            containerPort: 8000
         imagePullPolicy: IfNotPresent
         env:
           - name: bucketName
@@ -320,6 +347,9 @@ spec:
         - name: hyperproxy
           image: {{ .Values.hyperproxy.image }}
           imagePullPolicy: Always
+          ports:
+            - name: web
+              containerPort: 8000
           env:
             - name: PORT
               value: "8000"

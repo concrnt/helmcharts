@@ -17,7 +17,8 @@ spec:
         - name: posgresql
           image: postgres:16-bookworm
           ports:
-            - containerPort: 5432
+            - name: postgres
+              containerPort: 5432
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_USER
@@ -29,6 +30,17 @@ spec:
           volumeMounts:
             - name: postgres-varlib
               mountPath: {{ .Values.server.dbMountPath }}
+{{- if .Values.observability.enabled }}
+        - name: postgres-exporter
+          image: quay.io/prometheuscommunity/postgres-exporter
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: postgres-exporter
+              containerPort: 9187
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+{{- end }}
       volumes:
         - name: postgres-varlib
           persistentVolumeClaim:

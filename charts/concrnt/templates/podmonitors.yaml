@@ -1,0 +1,92 @@
+{{if .Values.observability.enabled}}
+
+# ccapi
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-api
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: ccapi
+  podMetricsEndpoints:
+    - port: web
+
+---
+# ccgateway
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-gateway
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: ccgateway
+  podMetricsEndpoints:
+    - port: web
+
+---
+# hyperproxy
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-hyperproxy
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: hyperproxy
+  podMetricsEndpoints:
+    - port: web
+
+---
+# postgres
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-postgres
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: postgres
+  podMetricsEndpoints:
+    - port: postgres-exporter
+
+---
+# redis
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-redis
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: redis
+  podMetricsEndpoints:
+    - port: redis-exporter
+
+---
+# memcached
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-memcached
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: memcached
+  podMetricsEndpoints:
+    - port: memcached-exporter
+
+{{end}}

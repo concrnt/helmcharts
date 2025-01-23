@@ -7,7 +7,7 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: web
     protocol: TCP
   selector:
     name: ccgateway
@@ -23,7 +23,7 @@ metadata:
 spec:
   ports:
   - port: 8000
-    targetPort: 8000
+    targetPort: web
     protocol: TCP
   selector:
     name: ccapi
@@ -41,7 +41,7 @@ metadata:
 spec:
   ports:
   - port: 8000
-    targetPort: 8000
+    targetPort: web
     protocol: TCP
   selector:
     name: ccactivitypub
@@ -58,7 +58,7 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: 80
+    targetPort: web
     protocol: TCP
   selector:
     name: ccwebui
@@ -73,7 +73,7 @@ metadata:
     name: concurrent-db
 spec:
   ports:
-  - port: 5432
+  - port: postgres
     protocol: TCP
   selector:
     name: concurrent-db
@@ -88,7 +88,7 @@ metadata:
     name: concurrent-redis
 spec:
   ports:
-  - port: 6379
+  - port: redis
     protocol: TCP
   selector:
     name: concurrent-redis
@@ -103,7 +103,7 @@ metadata:
     name: concurrent-memcached
 spec:
   ports:
-  - port: 11211
+  - port: memcached
     protocol: TCP
   selector:
     name: concurrent-memcached
@@ -138,7 +138,7 @@ metadata:
     name: mediaserver
 spec:
   ports:
-  - port: 8000
+  - port: web
     protocol: TCP
   selector:
     name: mediaserver
@@ -156,7 +156,7 @@ spec:
     name: hyperproxy
   ports:
     - protocol: TCP
-      port: 8000
+      port: web
   type: ClusterIP
 {{- end }}
 

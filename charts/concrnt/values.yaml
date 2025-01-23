@@ -31,7 +31,10 @@ backup:
   aws_endpoint_url: ""
   perfixformat: "%Y%m%d-"
 
-monitoring:
+observability:
+  enabled: false
+
+monitoring: # legacy
   enabled: false
   metrics:
     enabled: false
