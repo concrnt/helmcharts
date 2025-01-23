@@ -49,7 +49,7 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: concrnt-postgres
+  name: concurrent-db
   labels:
     release: kube-prometheus-stack
 spec:
@@ -64,7 +64,7 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: concrnt-redis
+  name: concurrent-redis
   labels:
     release: kube-prometheus-stack
 spec:
@@ -85,7 +85,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      name: memcached
+      name: concurrent-memcached
   podMetricsEndpoints:
     - port: memcached-expr
 
