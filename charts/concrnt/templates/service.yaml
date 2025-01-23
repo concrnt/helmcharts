@@ -73,7 +73,8 @@ metadata:
     name: concurrent-db
 spec:
   ports:
-  - port: postgres
+  - port: 5432
+    targetPort: postgres
     protocol: TCP
   selector:
     name: concurrent-db
@@ -88,7 +89,8 @@ metadata:
     name: concurrent-redis
 spec:
   ports:
-  - port: redis
+  - port: 6379
+    targetPort: redis
     protocol: TCP
   selector:
     name: concurrent-redis
@@ -103,7 +105,8 @@ metadata:
     name: concurrent-memcached
 spec:
   ports:
-  - port: memcached
+  - port: 11211
+    targetPort: memcached
     protocol: TCP
   selector:
     name: concurrent-memcached
@@ -138,7 +141,8 @@ metadata:
     name: mediaserver
 spec:
   ports:
-  - port: web
+  - port: 8000
+    targetPort: web
     protocol: TCP
   selector:
     name: mediaserver
@@ -155,8 +159,9 @@ spec:
   selector:
     name: hyperproxy
   ports:
-    - protocol: TCP
-      port: web
+    - port: 8000
+      targetPort: web
+      protocol: TCP
   type: ClusterIP
 {{- end }}
 
