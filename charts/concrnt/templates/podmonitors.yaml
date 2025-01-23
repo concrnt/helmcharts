@@ -87,6 +87,6 @@ spec:
     matchLabels:
       name: memcached
   podMetricsEndpoints:
-    - port: memcached-exporter
+    - port: memcached-expr
 
 {{end}}

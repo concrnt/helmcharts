@@ -222,7 +222,7 @@ spec:
         image: prom/memcached-exporter:v0.6.0
         imagePullPolicy: IfNotPresent
         ports:
-          - name: memcached-exporter
+          - name: memcached-expr
             containerPort: 9150
         args:
           - '--memcached.address=localhost:11211'
