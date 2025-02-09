@@ -45,3 +45,42 @@ spec:
         - name: postgres-varlib
           persistentVolumeClaim:
             claimName: postgres-varlib
+
+---
+{{- if .Values.meilisearch.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: meilisearch
+spec:
+  serviceName: meilisearch
+  replicas: 1
+  selector:
+    matchLabels:
+      name: meilisearch
+  template:
+    metadata:
+      labels:
+        name: meilisearch
+    spec:
+      containers:
+      - name: meilisearch
+        image: {{ .Values.meilisearch.image }}
+        ports:
+          - containerPort: 7700
+        imagePullPolicy: Always
+        env:
+          - name: MEILI_MASTER_KEY
+            value: {{ .Values.search.meilisearchKey }}
+        volumeMounts:
+          - name: meilisearch-data
+            mountPath: /data.ms
+  volumeClaimTemplates:
+  - metadata:
+      name: meilisearch-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.meilisearch.storage }}
+{{- end}}

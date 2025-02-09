@@ -34,6 +34,18 @@ backup:
 observability:
   enabled: false
 
+search:
+  enabled: false
+  image: ghcr.io/concrnt/cc-search:latest
+  meilisearchKey: "concrnt-meilisearch"
+  meilisearchUrl: "http://meilisearch:7700"
+  meilisearchIdx: "concrnt"
+
+meilisearch:
+  enabled: false
+  image: getmeili/meilisearch:prototype-japanese-13
+  storage: "1Gi"
+
 monitoring: # legacy
   enabled: false
   metrics:

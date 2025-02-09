@@ -357,3 +357,40 @@ spec:
               value: {{ .Values.server.memcachedAddr | quote }}
 {{ end }}
 
+---
+{{ if .Values.search.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cc-search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cc-search
+  template:
+    metadata:
+      labels:
+        name: cc-search
+    spec:
+      containers:
+      - name: cc-search
+        image: {{ .Values.search.image }}
+        ports:
+          - containerPort: 8000
+        imagePullPolicy: Always
+        env:
+          - name: DB_DSN
+            value: {{ .Values.server.dsn | quote }}
+          - name: REDIS_URL
+            value: {{ .Values.server.redisAddr | quote }}
+          - name: MEILISEARCH_URL
+            value: {{ .Values.search.meilisearchUrl | quote }}
+          - name: MEILISEARCH_KEY
+            value: {{ .Values.search.meilisearchKey | quote }}
+          - name: MEILISEARCH_IDX
+            value: {{ .Values.search.meilisearchIdx | quote }}
+          - name: PORT
+            value: "8000"
+{{ end }}
+
