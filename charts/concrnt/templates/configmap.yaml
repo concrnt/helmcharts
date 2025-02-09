@@ -224,7 +224,12 @@ data:
         port: 8000
         path: /storage
 {{- end }}
-
+{{- if .Values.search.enabled }}
+      - name: net.concrnt.search
+        host: cc-search
+        port: 8000
+        path: /search
+{{- end }}
 ---
 
 apiVersion: v1
