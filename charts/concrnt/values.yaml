@@ -61,7 +61,7 @@ monitoring: # legacy
 
 concrnt:
   appimage: ghcr.io/totegamma/ccapi:v0.0.0
-  gatewayimage: ghcr.io/totegamma/ccgateway:v0.0.0
+  gatewayimage: ghcr.io/totegamma/ccgateway:v0.6.12
   webimage: ghcr.io/totegamma/ccwebui:v0.6.12
   servicetype: ClusterIP
   fqdn: example.tld
