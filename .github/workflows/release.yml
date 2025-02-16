@@ -16,17 +16,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            chart:
+              - '**/Chart.yaml'
+
       - name: Configure Git
+        if: steps.changes.outputs.chart == 'true'
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
+        if: steps.changes.outputs.chart == 'true'
         uses: azure/setup-helm@v1
         with:
           version: v3.8.1
 
       - name: Run chart-releaser
+        if: steps.changes.outputs.chart == 'true'
         uses: helm/chart-releaser-action@v1.5.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
