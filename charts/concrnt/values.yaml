@@ -36,7 +36,7 @@ observability:
 
 search:
   enabled: false
-  image: ghcr.io/concrnt/cc-search:latest
+  image: ghcr.io/concrnt/cc-search:v0.0.0
   meilisearchKey: "concrnt-meilisearch"
   meilisearchUrl: "http://meilisearch:7700"
   meilisearchIdx: "concrnt"
@@ -60,9 +60,9 @@ monitoring: # legacy
     username: ""
 
 concrnt:
-  appimage: ghcr.io/totegamma/ccapi:latest
-  gatewayimage: ghcr.io/totegamma/ccgateway:latest
-  webimage: ghcr.io/totegamma/ccwebui:latest
+  appimage: ghcr.io/totegamma/ccapi:v0.0.0
+  gatewayimage: ghcr.io/totegamma/ccgateway:v0.0.0
+  webimage: ghcr.io/totegamma/ccwebui:v0.0.0
   servicetype: ClusterIP
   fqdn: example.tld
   registration: invite
@@ -82,12 +82,12 @@ mediaserver:
 
 activitypub:
   enabled: false
-  image: ghcr.io/concrnt/ccworld-ap-bridge:latest
+  image: ghcr.io/concrnt/ccworld-ap-bridge:v0.0.0
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 hyperproxy:
   enabled: true
-  image: ghcr.io/concrnt/hyperproxy:latest
+  image: ghcr.io/concrnt/hyperproxy:v0.0.0
 
 legal:
   tos: ""
