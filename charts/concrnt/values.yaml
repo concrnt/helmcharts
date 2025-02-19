@@ -82,7 +82,7 @@ mediaserver:
 
 activitypub:
   enabled: false
-  image: ghcr.io/concrnt/ccworld-ap-bridge:v0.4.1
+  image: ghcr.io/concrnt/ccworld-ap-bridge:v0.4.4
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 hyperproxy:
