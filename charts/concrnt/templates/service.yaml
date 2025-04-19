@@ -65,6 +65,8 @@ spec:
   type: ClusterIP
 
 ---
+
+{{- if .Values.postgres.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -79,8 +81,11 @@ spec:
   selector:
     name: concurrent-db
   type: ClusterIP
+{{- end }}
 
 ---
+
+{{- if .Values.redis.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -95,8 +100,11 @@ spec:
   selector:
     name: concurrent-redis
   type: ClusterIP
+{{- end }}
 
 ---
+
+{{- if .Values.memcached.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -111,28 +119,11 @@ spec:
   selector:
     name: concurrent-memcached
   type: ClusterIP
-
----
-
-{{- if .Values.monitoring.enabled }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: grafana-agent
-  labels:
-    name: grafana-agent
-spec:
-  ports:
-  - port: 4318
-    protocol: TCP
-  selector:
-    name: grafana-agent
-  type: ClusterIP
 {{- end }}
 
 ---
 
-{{ if .Values.mediaserver.enabled }}
+{{- if .Values.mediaserver.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -147,7 +138,7 @@ spec:
   selector:
     name: mediaserver
   type: ClusterIP
-{{ end }}
+{{- end }}
 
 ---
 {{- if .Values.hyperproxy.enabled }}

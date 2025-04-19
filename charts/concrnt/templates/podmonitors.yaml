@@ -1,4 +1,4 @@
-{{if .Values.observability.enabled}}
+{{if .Values.observability.createPodMonitors }}
 
 # ccapi
 apiVersion: monitoring.coreos.com/v1
@@ -31,6 +31,7 @@ spec:
 
 ---
 # hyperproxy
+{{ if .Values.hyperproxy.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -43,9 +44,10 @@ spec:
       name: hyperproxy
   podMetricsEndpoints:
     - port: web
-
+{{ end }}
 ---
 # postgres
+{{ if .Values.postgres.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -58,9 +60,10 @@ spec:
       name: concurrent-db
   podMetricsEndpoints:
     - port: postgres-expr
-
+{{ end }}
 ---
 # redis
+{{ if .Values.redis.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -73,9 +76,10 @@ spec:
       name: concurrent-redis
   podMetricsEndpoints:
     - port: redis-exporter
-
+{{ end }}
 ---
 # memcached
+{{ if .Values.memcached.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -88,5 +92,5 @@ spec:
       name: concurrent-memcached
   podMetricsEndpoints:
     - port: memcached-expr
-
-{{end}}
+{{ end }}
+{{ end }}

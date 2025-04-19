@@ -82,8 +82,6 @@ spec:
           persistentVolumeClaim:
             claimName: concrnt-repository
 
-
-
 ---
 
 {{- if .Values.activitypub.enabled }}
@@ -155,47 +153,7 @@ spec:
 
 ---
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: concurrent-redis
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      name: concurrent-redis
-  template:
-    metadata:
-      labels:
-        name: concurrent-redis
-    spec:
-      containers:
-      - name: redis
-        image: redis:7-bookworm
-        ports:
-          - name: redis
-            containerPort: 6379
-        imagePullPolicy: IfNotPresent
-        volumeMounts:
-          - name: redis-data
-            mountPath: /data
-{{- if .Values.observability.enabled }}
-      - name: redis-exporter
-        image: oliver006/redis_exporter:v1.6.0-alpine
-        imagePullPolicy: IfNotPresent
-        ports:
-          - name: redis-exporter
-            containerPort: 9121
-        args:
-          - "--redis.addr=redis://localhost:6379"
-{{- end }}
-      volumes:
-        - name: redis-data
-          persistentVolumeClaim:
-            claimName: redis-data
-
----
-
+{{- if .Values.memcached.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -227,62 +185,6 @@ spec:
         args:
           - '--memcached.address=localhost:11211'
 {{- end }}
-
----
-
-{{- if .Values.monitoring.enabled }}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: grafana-agent
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      name: grafana-agent
-  template:
-    metadata:
-      labels:
-        name: grafana-agent
-    spec:
-      containers:
-      - name: agent
-        image: grafana/agent
-        ports:
-          - containerPort: 4318
-        imagePullPolicy: Always
-        volumeMounts:
-          - mountPath: /etc/agent/agent.yaml
-            name: observability-config
-            subPath: agent.yaml
-
-      - name: postgres-exporter
-        image: quay.io/prometheuscommunity/postgres-exporter
-        imagePullPolicy: IfNotPresent
-        env:
-          - name: DATA_SOURCE_NAME
-            value: "postgresql://postgres:postgres@db:5432/postgres?sslmode=disable"
-
-      - name: redis-exporter
-        image: oliver006/redis_exporter:v1.6.0-alpine
-        imagePullPolicy: IfNotPresent
-        args:
-          - "--redis.addr=redis://redis:6379"
-
-      - name: memcached-exporter
-        image: prom/memcached-exporter:v0.6.0
-        imagePullPolicy: IfNotPresent
-        args:
-          - '--memcached.address=memcached:11211'
-
-      volumes:
-        - name: observability-config
-          configMap:
-            name: observability-config
-            items:
-            - key: agent.yaml
-              path: agent.yaml
-              mode: 0644
 {{- end }}
 
 ---

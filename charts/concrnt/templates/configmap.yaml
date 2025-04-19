@@ -8,9 +8,8 @@ data:
       dsn: {{ .Values.server.dsn }}
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
-      traceEndpoint: "grafana-agent:4318"
-      enableTrace: {{ .Values.monitoring.traces.enabled }}
-      repositoryPath: "/var/lib/concrnt"
+      traceEndpoint: {{ .Values.observability.traceEndpoint }}
+      enableTrace: {{ .Values.observability.enableTrace }}
       captchaSitekey: {{ .Values.server.captchaSitekey }}
       captchaSecret: {{ .Values.server.captchaSecret }}
       vapidPublicKey: {{ .Values.server.vapidPublicKey | quote }}
@@ -261,11 +260,8 @@ data:
       dsn: {{ .Values.server.dsn }}
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
-      traceEndpoint: "grafana-agent:4318"
-      enableTrace: {{ .Values.monitoring.traces.enabled }}
-      repositoryPath: "/var/lib/concrnt"
-      captchaSitekey: {{ .Values.server.captchaSitekey }}
-      captchaSecret: {{ .Values.server.captchaSecret }}
+      enableTrace: {{ .Values.observability.enableTrace }}
+      traceEndpoint: {{ .Values.observability.traceEndpoint }}
 
     nodeInfo:
       openRegistration: {{ .Values.concrnt.registration }}
@@ -277,58 +273,3 @@ data:
           email: {{ .Values.profile.maintainerEmail }}
         themeColor: {{ .Values.profile.themeColor | quote }}
 
----
-
-{{- if .Values.monitoring.enabled }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: observability-config
-data:
-  agent.yaml: |-
-    server:
-      log_level: debug
-
-{{- if .Values.monitoring.metrics.enabled }}
-    metrics:
-      configs:
-        - name: default
-          scrape_configs:
-          - job_name: "concrnt"
-            static_configs:
-              - targets:
-                - 'ccgateway:80'
-                - 'ccapi:8000'
-                - 'localhost:9187' # postgres-exporter
-                - 'localhost:9121' # redis-exporter
-                - 'localhost:9150' # memcached-exporter
-{{- if .Values.hyperproxy.enabled }}
-                - 'hyperproxy:8000'
-{{- end }}
-                labels:
-                  instance: {{ .Values.concrnt.fqdn | quote }}
-          remote_write:
-            - url: {{ .Values.monitoring.metrics.endpoint }}
-              basic_auth:
-                username: {{ .Values.monitoring.metrics.username }}
-                password: {{ .Values.monitoring.metrics.password }}
-{{- end }}
-{{- if .Values.monitoring.traces.enabled }}
-    traces:
-      configs:
-      - name: default
-        receivers:
-          otlp:
-            protocols:
-              http:
-                endpoint: 0.0.0.0:4318
-        remote_write:
-          - endpoint: {{ .Values.monitoring.traces.endpoint }}
-            basic_auth:
-              username: {{ .Values.monitoring.traces.username }}
-              password: {{ .Values.monitoring.traces.password }}
-        batch:
-          timeout: 5s
-          send_batch_size: 100
-{{- end }}
-{{- end }}

@@ -1,3 +1,4 @@
+{{- if .Values.postgres.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -7,21 +8,10 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.server.dbstorage }}
-
+      storage: {{ .Values.postgres.storage }}
+{{- end }}
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: concrnt-repository
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.server.repositoryStorage }}
-
----
+{{ if .Values.redis.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -31,4 +21,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.server.redisstorage }}
+      storage: {{ .Values.redis.storage }}
+{{- end }}

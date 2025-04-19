@@ -6,10 +6,22 @@ server:
   captchaSecret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
   vapidPublicKey: ""
   vapidPrivateKey: ""
-  dbstorage: "1Gi"
-  dbMountPath: "/var/lib/postgresql/data"
-  redisstorage: "1Gi"
-  repositoryStorage: "1Gi"
+
+observability:
+  createPodMonitors: false
+  enableTrace: false
+  traceEndpoint: "grafana-agent:4318"
+
+concrnt:
+  appimage: ghcr.io/totegamma/ccapi:v1.6.13
+  gatewayimage: ghcr.io/totegamma/ccgateway:v1.6.13
+  webimage: ghcr.io/concrnt/web-dashboard:v0.0.5
+
+  servicetype: ClusterIP
+  fqdn: example.tld
+  registration: invite
+  privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  dimension: concrnt-mainnet
 
 profile:
   nickname: concrnt-domain
@@ -21,53 +33,12 @@ profile:
   maintainerName: changeme
   maintainerEmail: changeme@example.com
 
-backup:
-  enabled: false
-  cron: "0 20 * * *"
-  s3key: "s3://examplebucket/"
-  aws_access_key_id: ""
-  aws_secret_access_key: ""
-  aws_default_region: "ap-northeast-1"
-  aws_endpoint_url: ""
-  perfixformat: "%Y%m%d-"
-
-observability:
-  enabled: false
-
 search:
   enabled: false
   image: ghcr.io/concrnt/cc-search:v0.1.2
   meilisearchKey: "concrnt-meilisearch"
   meilisearchUrl: "http://meilisearch:7700"
   meilisearchIdx: "concrnt"
-
-meilisearch:
-  enabled: false
-  image: getmeili/meilisearch:prototype-japanese-13
-  storage: "1Gi"
-
-monitoring: # legacy
-  enabled: false
-  metrics:
-    enabled: false
-    endpoint: ""
-    password: ""
-    username: ""
-  traces:
-    enabled: false
-    endpoint: ""
-    password: ""
-    username: ""
-
-concrnt:
-  appimage: ghcr.io/totegamma/ccapi:v1.6.13
-  gatewayimage: ghcr.io/totegamma/ccgateway:v1.6.13
-  webimage: ghcr.io/concrnt/web-dashboard:v0.0.5
-  servicetype: ClusterIP
-  fqdn: example.tld
-  registration: invite
-  privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  dimension: concrnt-mainnet
 
 mediaserver:
   enabled: false
@@ -131,4 +102,21 @@ legal:
     2. 他者へのリスペクトを忘れないようにしましょう。
     3. ユーザー名・アイコン・ステータスメッセージなどは他者を不快にさせるようなものは控え、投稿も内容によっては公開範囲をコントロールしましょう。
     4. コミュニティタイムラインでは、そのコミュニティの趣旨をくみ取り、適切な投稿を心がけましょう。
+
+postgres:
+  enabled: true
+  storage: "1Gi"
+  mountPath: "/var/lib/postgresql/data"
+
+redis:
+  enabled: true
+  storage: "1Gi"
+
+memcached:
+  enabled: true
+
+meilisearch:
+  enabled: false
+  image: getmeili/meilisearch:prototype-japanese-13
+  storage: "1Gi"
 

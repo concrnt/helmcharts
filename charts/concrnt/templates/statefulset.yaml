@@ -1,3 +1,4 @@
+{{- if .Values.postgres.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -29,7 +30,7 @@ spec:
               value: concrnt
           volumeMounts:
             - name: postgres-varlib
-              mountPath: {{ .Values.server.dbMountPath }}
+              mountPath: {{ .Values.postgres.mountPath }}
 {{- if .Values.observability.enabled }}
         - name: postgres-exporter
           image: quay.io/prometheuscommunity/postgres-exporter
@@ -45,6 +46,7 @@ spec:
         - name: postgres-varlib
           persistentVolumeClaim:
             claimName: postgres-varlib
+{{- end }}
 
 ---
 {{- if .Values.meilisearch.enabled }}
@@ -84,3 +86,51 @@ spec:
         requests:
           storage: {{ .Values.meilisearch.storage }}
 {{- end}}
+
+---
+
+{{- if .Values.redis.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: concurrent-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: concurrent-redis
+  template:
+    metadata:
+      labels:
+        name: concurrent-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-bookworm
+        ports:
+          - name: redis
+            containerPort: 6379
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: redis-data
+            mountPath: /data
+{{- if .Values.observability.enabled }}
+      - name: redis-exporter
+        image: oliver006/redis_exporter:v1.6.0-alpine
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: redis-exporter
+            containerPort: 9121
+        args:
+          - "--redis.addr=redis://localhost:6379"
+{{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.redis.storage }}
+{{- end }}
+
