@@ -19,6 +19,9 @@ spec:
           - name: web
             containerPort: 8080
         imagePullPolicy: Always
+        env:
+          - name: CONCRNT_CONFIGS
+            value: {{ .Values.concrnt.configpaths | quote }}
         livenessProbe:
           httpGet:
             path: /health
@@ -32,6 +35,11 @@ spec:
           - name: concrnt-static
             mountPath: /etc/concrnt/static
             readOnly: true
+{{- if .Values.concrnt.useSecret }}
+          - name: concrnt-secret
+            mountPath: /etc/concrnt/secret
+            readOnly: true
+{{- end }}
       volumes:
         - name: concrnt-config
           configMap:
@@ -39,6 +47,11 @@ spec:
         - name: concrnt-static
           configMap:
             name: concrnt-static
+{{- if .Values.concrnt.useSecret }}
+        - name: concrnt-secret
+          secret:
+            secretName: concrnt-secret
+{{- end }}
 
 ---
 
@@ -63,6 +76,9 @@ spec:
           - name: web
             containerPort: 8000
         imagePullPolicy: Always
+        env:
+          - name: CONCRNT_CONFIGS
+            value: {{ .Values.concrnt.configpaths | quote }}
         livenessProbe:
           httpGet:
             path: /health
@@ -72,15 +88,20 @@ spec:
         volumeMounts:
           - name: concrnt-config
             mountPath: /etc/concrnt/config
-          - name: repository
-            mountPath: /var/lib/concrnt
+{{- if .Values.concrnt.useSecret }}
+          - name: concrnt-secret
+            mountPath: /etc/concrnt/secret
+            readOnly: true
+{{- end }}
       volumes:
         - name: concrnt-config
           configMap:
             name: concrnt-config
-        - name: repository
-          persistentVolumeClaim:
-            claimName: concrnt-repository
+{{- if .Values.concrnt.useSecret }}
+        - name: concrnt-secret
+          secret:
+            secretName: concrnt-secret
+{{- end }}
 
 ---
 

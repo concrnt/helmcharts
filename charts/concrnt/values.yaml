@@ -23,6 +23,9 @@ concrnt:
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   dimension: concrnt-mainnet
 
+  useSecret: false
+  configpaths: "" # "/etc/concrnt/config/config.yaml:/etc/concrnt/secret/config.yaml"
+
 profile:
   nickname: concrnt-domain
   description: domain description
