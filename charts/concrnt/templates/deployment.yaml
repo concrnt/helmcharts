@@ -202,7 +202,7 @@ spec:
           - name: memcached
             containerPort: 11211
         imagePullPolicy: IfNotPresent
-{{- if .Values.observability.enabled }}
+{{- if .Values.observability.enableExporters }}
       - name: memcached-exporter
         image: prom/memcached-exporter:v0.6.0
         imagePullPolicy: IfNotPresent

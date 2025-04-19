@@ -31,7 +31,7 @@ spec:
           volumeMounts:
             - name: postgres-varlib
               mountPath: {{ .Values.postgres.mountPath }}
-{{- if .Values.observability.enabled }}
+{{- if .Values.observability.enableExporters }}
         - name: postgres-exporter
           image: quay.io/prometheuscommunity/postgres-exporter
           imagePullPolicy: IfNotPresent
@@ -114,7 +114,7 @@ spec:
         volumeMounts:
           - name: redis-data
             mountPath: /data
-{{- if .Values.observability.enabled }}
+{{- if .Values.observability.enableExporters }}
       - name: redis-exporter
         image: oliver006/redis_exporter:v1.6.0-alpine
         imagePullPolicy: IfNotPresent
