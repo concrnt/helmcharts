@@ -1,0 +1,28 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: activitypub-config
+data:
+  apconfig.yaml: |-
+    apConfig:
+      fqdn: {{ .Values.concrnt.fqdn }}
+      proxyPriv: {{ .Values.activitypub.privatekey }}
+
+    server:
+      apiAddr: ccgateway
+      dsn: {{ .Values.server.dsn }}
+      redisAddr: {{ .Values.server.redisAddr }}
+      memcachedAddr: {{ .Values.server.memcachedAddr }}
+      enableTrace: {{ .Values.observability.enableTrace }}
+      traceEndpoint: {{ .Values.observability.traceEndpoint }}
+
+    nodeInfo:
+      openRegistration: {{ .Values.concrnt.registration }}
+      metadata:
+        nodeName: {{ .Values.profile.nickname }}
+        nodeDescription: {{ .Values.profile.description }}
+        maintainer:
+          name: {{ .Values.profile.maintainerName }}
+          email: {{ .Values.profile.maintainerEmail }}
+        themeColor: {{ .Values.profile.themeColor | quote }}
