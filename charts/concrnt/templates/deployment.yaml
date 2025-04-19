@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ccgateway
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/configmaps/concrnt-config.yaml") . | sha256sum }}
 spec:
   replicas: 1
   selector:
@@ -13,6 +11,8 @@ spec:
     metadata:
       labels:
         name: ccgateway
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/concrnt-config.yaml") . | sha256sum }}
     spec:
       containers:
       - name: ccgateway
@@ -61,8 +61,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ccapi
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/configmaps/concrnt-config.yaml") . | sha256sum }}
 spec:
   replicas: 1
   selector:
@@ -72,6 +70,8 @@ spec:
     metadata:
       labels:
         name: ccapi
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/concrnt-config.yaml") . | sha256sum }}
     spec:
       containers:
       - name: ccapi
@@ -114,8 +114,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ccactivitypub
-  annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/configmaps/activitypub-config.yaml") . | sha256sum }}
 spec:
   replicas: 1
   selector:
@@ -125,6 +123,8 @@ spec:
     metadata:
       labels:
         name: ccactivitypub
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/activitypub-config.yaml") . | sha256sum }}
     spec:
       containers:
       - name: ccactivitypub
