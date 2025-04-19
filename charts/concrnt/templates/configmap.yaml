@@ -6,6 +6,7 @@ data:
   config.yaml: |-
     server:
       dsn: {{ .Values.server.dsn }}
+      gatewayAddr: "ccgateway:8080"
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
       traceEndpoint: {{ .Values.observability.traceEndpoint }}
