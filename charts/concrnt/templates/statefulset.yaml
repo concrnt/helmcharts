@@ -74,9 +74,15 @@ spec:
         image: {{ .Values.meilisearch.image }}
         ports:
           - containerPort: 7700
+{{- if .Values.meilisearch.useSecret }}
+        envFrom:
+          - secretRef:
+              name: meilisearch-secret
+{{- else }}
         env:
           - name: MEILI_MASTER_KEY
             value: {{ .Values.search.meilisearchKey }}
+{{- end }}
         volumeMounts:
           - name: meilisearch-data
             mountPath: /data.ms
