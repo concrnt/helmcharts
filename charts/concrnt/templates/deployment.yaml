@@ -142,10 +142,20 @@ spec:
         volumeMounts:
           - name: activitypub-config
             mountPath: /etc/concrnt/config
+{{- if .Values.activitypub.useSecret }}
+          - name: activitypub-secret
+            mountPath: /etc/concrnt/secret
+            readOnly: true
+{{- end }}
       volumes:
         - name: activitypub-config
           configMap:
             name: activitypub-config
+{{- if .Values.activitypub.useSecret }}
+        - name: activitypub-secret
+          secret:
+            secretName: activitypub-secret
+{{- end }}
 {{- end }}
 
 ---
