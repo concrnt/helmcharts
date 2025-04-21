@@ -200,7 +200,7 @@ spec:
         ports:
           - name: memcached
             containerPort: 11211
-{{- if .Values.observability.createExporter }}
+{{- if .Values.memcached.createExporter }}
       - name: memcached-exporter
         image: prom/memcached-exporter:v0.6.0
         ports:
