@@ -245,8 +245,7 @@ spec:
             containerPort: 8000
 {{- if .Values.mediaserver.useSecret }}
         envFrom:
-          - name: mediaserver-secret
-            secretRef:
+          - secretRef:
               name: mediaserver-secret
 {{- else }}
         env:
@@ -321,8 +320,7 @@ spec:
           - containerPort: 8000
 {{- if .Values.search.useSecret }}
         envFrom:
-          - name: search-secret
-            secretRef:
+          - secretRef:
               name: search-secret
 {{- else }}
         env:
