@@ -127,6 +127,7 @@ memcached:
 
 meilisearch:
   enabled: false
+  useSecret: false
   image: getmeili/meilisearch:prototype-japanese-13
   storage: "1Gi"
 
