@@ -47,7 +47,7 @@ spec:
 {{ end }}
 ---
 # postgres
-{{ if .Values.postgres.enabled }}
+{{ if .Values.postgres.createExporter }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -63,7 +63,7 @@ spec:
 {{ end }}
 ---
 # redis
-{{ if .Values.redis.enabled }}
+{{ if .Values.redis.createExporter }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -79,7 +79,7 @@ spec:
 {{ end }}
 ---
 # memcached
-{{ if .Values.memcached.enabled }}
+{{ if .Values.memcached.createExporter }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:

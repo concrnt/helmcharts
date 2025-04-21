@@ -20,7 +20,11 @@ spec:
           ports:
             - name: postgres
               containerPort: 5432
-          imagePullPolicy: IfNotPresent
+{{- if .Values.postgres.useSecret }}
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+{{- else }}
           env:
             - name: POSTGRES_USER
               value: postgres
@@ -28,13 +32,13 @@ spec:
               value: postgres
             - name: POSTGRES_DB
               value: concrnt
+{{- end }}
           volumeMounts:
             - name: postgres-varlib
               mountPath: {{ .Values.postgres.mountPath }}
-{{- if .Values.observability.enableExporters }}
+{{- if .Values.postgres.createExporter }}
         - name: postgres-exporter
           image: quay.io/prometheuscommunity/postgres-exporter
-          imagePullPolicy: IfNotPresent
           ports:
             - name: postgres-expr
               containerPort: 9187
@@ -70,7 +74,6 @@ spec:
         image: {{ .Values.meilisearch.image }}
         ports:
           - containerPort: 7700
-        imagePullPolicy: Always
         env:
           - name: MEILI_MASTER_KEY
             value: {{ .Values.search.meilisearchKey }}
@@ -110,14 +113,12 @@ spec:
         ports:
           - name: redis
             containerPort: 6379
-        imagePullPolicy: IfNotPresent
         volumeMounts:
           - name: redis-data
             mountPath: /data
-{{- if .Values.observability.enableExporters }}
+{{- if .Values.redis.createExporter }}
       - name: redis-exporter
         image: oliver006/redis_exporter:v1.6.0-alpine
-        imagePullPolicy: IfNotPresent
         ports:
           - name: redis-exporter
             containerPort: 9121

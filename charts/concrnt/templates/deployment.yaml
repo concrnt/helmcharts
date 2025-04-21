@@ -20,7 +20,6 @@ spec:
         ports:
           - name: web
             containerPort: 8080
-        imagePullPolicy: Always
         env:
           - name: CONCRNT_CONFIGS
             value: {{ .Values.concrnt.configpaths | quote }}
@@ -79,7 +78,6 @@ spec:
         ports:
           - name: web
             containerPort: 8000
-        imagePullPolicy: Always
         env:
           - name: CONCRNT_CONFIGS
             value: {{ .Values.concrnt.configpaths | quote }}
@@ -132,7 +130,9 @@ spec:
         ports:
           - name: web
             containerPort: 8000
-        imagePullPolicy: Always
+        env:
+          - name: CCWORLD_AP_BRIDGE_CONFIGS
+            value: {{ .Values.activitypub.configpaths | quote }}
         livenessProbe:
           httpGet:
             path: /health
@@ -170,7 +170,6 @@ spec:
         ports:
           - name: web
             containerPort: 80
-        imagePullPolicy: Always
         livenessProbe:
           httpGet:
             path: /web/index.html
@@ -201,11 +200,9 @@ spec:
         ports:
           - name: memcached
             containerPort: 11211
-        imagePullPolicy: IfNotPresent
-{{- if .Values.observability.enableExporters }}
+{{- if .Values.observability.createExporter }}
       - name: memcached-exporter
         image: prom/memcached-exporter:v0.6.0
-        imagePullPolicy: IfNotPresent
         ports:
           - name: memcached-expr
             containerPort: 9150
@@ -236,7 +233,12 @@ spec:
         ports:
           - name: web
             containerPort: 8000
-        imagePullPolicy: IfNotPresent
+{{- if .Values.mediaserver.useSecret }}
+        envFrom:
+          - name: mediaserver-secret
+            secretRef:
+              name: mediaserver-secret
+{{- else }}
         env:
           - name: bucketName
             value: {{ .Values.mediaserver.bucketName | quote }}
@@ -254,7 +256,8 @@ spec:
             value: {{ .Values.mediaserver.quota | quote }}
           - name: region
             value: {{ .Values.mediaserver.region | quote }}
-{{ end }}
+{{- end }}
+{{- end }}
 
 ---
 {{ if .Values.hyperproxy.enabled }}
@@ -275,7 +278,6 @@ spec:
       containers:
         - name: hyperproxy
           image: {{ .Values.hyperproxy.image }}
-          imagePullPolicy: Always
           ports:
             - name: web
               containerPort: 8000
@@ -307,7 +309,12 @@ spec:
         image: {{ .Values.search.image }}
         ports:
           - containerPort: 8000
-        imagePullPolicy: Always
+{{- if .Values.search.useSecret }}
+        envFrom:
+          - name: search-secret
+            secretRef:
+              name: search-secret
+{{- else }}
         env:
           - name: DB_DSN
             value: {{ .Values.server.dsn | quote }}
@@ -321,5 +328,6 @@ spec:
             value: {{ .Values.search.meilisearchIdx | quote }}
           - name: PORT
             value: "8000"
-{{ end }}
+{{- end }}
+{{- end }}
 

@@ -8,10 +8,9 @@ server:
   vapidPrivateKey: ""
 
 observability:
-  enableExporters: false
   createPodMonitors: false
   enableTrace: false
-  traceEndpoint: "grafana-agent:4318"
+  traceEndpoint: "alloy:4318"
 
 concrnt:
   appimage: ghcr.io/totegamma/ccapi:v1.7.0
@@ -39,12 +38,14 @@ profile:
 search:
   enabled: false
   image: ghcr.io/concrnt/cc-search:v0.1.2
+  useSecret: false
   meilisearchKey: "concrnt-meilisearch"
   meilisearchUrl: "http://meilisearch:7700"
   meilisearchIdx: "concrnt"
 
 mediaserver:
   enabled: false
+  useSecret: false
   image: ghcr.io/totegamma/cc-media-server:v0.5.0
   bucketName: YOUR_BUCKET_NAME
   endpointUrl: https://xxxxxx.r2.cloudflarestorage.com
@@ -58,6 +59,7 @@ activitypub:
   enabled: false
   image: ghcr.io/concrnt/ccworld-ap-bridge:v0.5.1
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  configpaths: "" # "/etc/concrnt/config/config.yaml:/etc/concrnt/secret/config.yaml"
 
 hyperproxy:
   enabled: true
@@ -77,7 +79,7 @@ legal:
         "email": {
           "type": "string",
           "title": "メールアドレス",
-          "description": "最終的なご連絡先"
+          "description": "最終的なご連絡先 確認メールなどシステムでの利用はありません。"
         },
         "social": {
           "type": "string",
@@ -110,13 +112,17 @@ postgres:
   enabled: true
   storage: "1Gi"
   mountPath: "/var/lib/postgresql/data"
+  createExporter: false
+  useSecret: false
 
 redis:
   enabled: true
   storage: "1Gi"
+  createExporter: false
 
 memcached:
   enabled: true
+  createExporter: false
 
 meilisearch:
   enabled: false
