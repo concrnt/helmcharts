@@ -10,7 +10,7 @@ data:
       proxyPriv: {{ .Values.activitypub.privatekey }}
 
     server:
-      apiAddr: ccgateway
+      gatewayAddr: "ccgateway"
       dsn: {{ .Values.server.dsn }}
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
