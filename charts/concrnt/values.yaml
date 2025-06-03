@@ -15,7 +15,7 @@ observability:
 concrnt:
   appimage: ghcr.io/concrnt/ccapi:v1.7.4
   gatewayimage: ghcr.io/concrnt/ccgateway:v1.7.4
-  webimage: ghcr.io/concrnt/web-dashboard:v0.0.5
+  webimage: ghcr.io/concrnt/web-dashboard:v0.0.6
 
   servicetype: ClusterIP
   fqdn: example.tld
