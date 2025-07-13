@@ -58,7 +58,7 @@ mediaserver:
 activitypub:
   enabled: false
   useSecret: false
-  image: ghcr.io/concrnt/ccworld-ap-bridge:v0.6.3
+  image: ghcr.io/concrnt/ccworld-ap-bridge:v0.6.4
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   configpaths: "" # "/etc/concrnt/config/config.yaml:/etc/concrnt/secret/config.yaml"
 
