@@ -13,7 +13,7 @@ observability:
   traceEndpoint: "alloy:4318"
 
 concrnt:
-  appimage: ghcr.io/concrnt/ccapi:v1.7.4
+  appimage: ghcr.io/concrnt/ccapi:v1.7.5
   gatewayimage: ghcr.io/concrnt/ccgateway:v1.7.4
   webimage: ghcr.io/concrnt/web-dashboard:v0.0.6
 
