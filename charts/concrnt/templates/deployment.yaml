@@ -206,13 +206,13 @@ spec:
     spec:
       containers:
       - name: memcached
-        image: memcached:1.6-bookworm
+        image: docker.io/memcached:1.6-bookworm
         ports:
           - name: memcached
             containerPort: 11211
 {{- if .Values.memcached.createExporter }}
       - name: memcached-exporter
-        image: prom/memcached-exporter:v0.6.0
+        image: docker.io/prom/memcached-exporter:v0.6.0
         ports:
           - name: memcached-expr
             containerPort: 9150
