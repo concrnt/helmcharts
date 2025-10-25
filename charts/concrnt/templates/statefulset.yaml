@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: posgresql
-          image: postgres:16-bookworm
+          image: docker.io/postgres:16-bookworm
           ports:
             - name: postgres
               containerPort: 5432
@@ -115,7 +115,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: redis:7-bookworm
+        image: docker.io/redis:7-bookworm
         ports:
           - name: redis
             containerPort: 6379
@@ -124,7 +124,7 @@ spec:
             mountPath: /data
 {{- if .Values.redis.createExporter }}
       - name: redis-exporter
-        image: oliver006/redis_exporter:v1.6.0-alpine
+        image: docker.io/oliver006/redis_exporter:v1.6.0-alpine
         ports:
           - name: redis-exporter
             containerPort: 9121
