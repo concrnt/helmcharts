@@ -5,8 +5,8 @@ metadata:
 data:
   config.yaml: |-
     server:
-      dsn: {{ .Values.server.dsn2 }}
-      gatewayAddr: ccgateway
+      postgresDsn: {{ .Values.server.dsn2 }}
+      gatewayAddr: concrnt2
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
       traceEndpoint: {{ .Values.observability.traceEndpoint }}
@@ -16,7 +16,7 @@ data:
       vapidPublicKey: {{ .Values.server.vapidPublicKey | quote }}
       vapidPrivateKey: {{ .Values.server.vapidPrivateKey | quote }}
 
-    concrnt:
+    nodeInfo:
       fqdn: {{ .Values.concrnt.fqdn }}
       registration: {{ .Values.concrnt.registration }}
       privatekey: {{ .Values.concrnt.privatekey }}
