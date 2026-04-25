@@ -147,9 +147,9 @@ spec:
             readOnly: true
 {{- end }}
       volumes:
-        - name: concrnt-config
+        - name: concrnt2-config
           configMap:
-            name: concrnt-config
+            name: concrnt2-config
 {{- if .Values.concrnt2.useSecret }}
         - name: concrnt-secret
           secret:
