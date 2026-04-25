@@ -240,6 +240,34 @@ spec:
           periodSeconds: 3
 
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: world-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: world-app
+  template:
+    metadata:
+      labels:
+        name: world-app
+    spec:
+      containers:
+      - name: world-app
+        image: {{ .Values.concrnt2.webimage }}
+        ports:
+          - name: world-app
+            containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /web/index.html
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 3
+
+---
 
 {{- if .Values.memcached.enabled }}
 apiVersion: apps/v1

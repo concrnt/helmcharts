@@ -62,7 +62,7 @@ data:
         path: /search
 {{- end }}
       - name: world.concrnt.web
-        host: web
+        host: world-app
         port: 80
         path: /
         preservePath: true

@@ -10,7 +10,7 @@ spec:
     targetPort: web
     protocol: TCP
   selector:
-    name: ccgateway
+    name: concrnt2
   type: {{ .Values.concrnt2.servicetype }}
 
 ---
@@ -79,6 +79,22 @@ spec:
     protocol: TCP
   selector:
     name: ccwebui
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: world-app
+  labels:
+    name: world-app
+spec:
+  ports:
+  - port: 80
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: world-app
   type: ClusterIP
 
 ---
