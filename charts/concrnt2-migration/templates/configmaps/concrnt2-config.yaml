@@ -34,7 +34,7 @@ data:
     services:
       - name: net.concrnt.legacy
         host: ccgateway
-        port: 8080
+        port: 80
         path: /api/v1
         preservePath: true
 {{- if .Values.mediaserver.enabled }}

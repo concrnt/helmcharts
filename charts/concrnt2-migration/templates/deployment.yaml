@@ -258,7 +258,7 @@ spec:
       - name: world-app
         image: {{ .Values.concrnt2.webimage }}
         ports:
-          - name: world-app
+          - name: web
             containerPort: 80
         livenessProbe:
           httpGet:
