@@ -6,7 +6,7 @@ data:
   config.yaml: |-
     server:
       postgresDsn: {{ .Values.server.dsn2 }}
-      gatewayAddr: concrnt2
+      gatewayAddr: http://concrnt2
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
       traceEndpoint: {{ .Values.observability.traceEndpoint }}
