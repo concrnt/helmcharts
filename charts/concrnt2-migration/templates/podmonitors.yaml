@@ -1,0 +1,96 @@
+{{if .Values.observability.createPodMonitors }}
+
+# ccapi
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-api
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: ccapi
+  podMetricsEndpoints:
+    - port: web
+
+---
+# ccgateway
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-gateway
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: ccgateway
+  podMetricsEndpoints:
+    - port: web
+
+---
+# hyperproxy
+{{ if .Values.hyperproxy.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-hyperproxy
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: hyperproxy
+  podMetricsEndpoints:
+    - port: web
+{{ end }}
+---
+# postgres
+{{ if .Values.postgres.createExporter }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-postgres
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: concurrent-db
+  podMetricsEndpoints:
+    - port: postgres-expr
+{{ end }}
+---
+# redis
+{{ if .Values.redis.createExporter }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-redis
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: concurrent-redis
+  podMetricsEndpoints:
+    - port: redis-exporter
+{{ end }}
+---
+# memcached
+{{ if .Values.memcached.createExporter }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-memcached
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: concurrent-memcached
+  podMetricsEndpoints:
+    - port: memcached-expr
+{{ end }}
+{{ end }}

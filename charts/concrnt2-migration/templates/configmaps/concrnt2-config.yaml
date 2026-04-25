@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: concrnt2-config
+data:
+  config.yaml: |-
+    server:
+      dsn: {{ .Values.server.dsn2 }}
+      gatewayAddr: ccgateway
+      redisAddr: {{ .Values.server.redisAddr }}
+      memcachedAddr: {{ .Values.server.memcachedAddr }}
+      traceEndpoint: {{ .Values.observability.traceEndpoint }}
+      enableTrace: {{ .Values.observability.enableTrace }}
+      captchaSitekey: {{ .Values.server.captchaSitekey }}
+      captchaSecret: {{ .Values.server.captchaSecret }}
+      vapidPublicKey: {{ .Values.server.vapidPublicKey | quote }}
+      vapidPrivateKey: {{ .Values.server.vapidPrivateKey | quote }}
+
+    concrnt:
+      fqdn: {{ .Values.concrnt.fqdn }}
+      registration: {{ .Values.concrnt.registration }}
+      privatekey: {{ .Values.concrnt.privatekey }}
+      dimension: {{ .Values.concrnt.dimension }}
+
+    profile:
+      nickname: {{ .Values.profile.nickname }}
+      description: {{ .Values.profile.description }}
+      logo: {{ .Values.profile.logo }}
+      wordmark: {{ .Values.profile.wordmark }}
+      themeColor: {{ .Values.profile.themeColor | quote }}
+      maintainerName: {{ .Values.profile.maintainerName }}
+      maintainerEmail: {{ .Values.profile.maintainerEmail }}
+
+    services:
+      - name: net.concrnt.legacy
+        host: ccgateway
+        port: 8080
+        path: /api/v1
+        preservePath: true
+{{- if .Values.mediaserver.enabled }}
+      - name: world.concrnt.mediaserver
+        host: host.docker.internal
+        port: 8001
+        path: /storage
+{{- end }}
+{{- if .Values.hyperproxy.enabled }}
+      - name: world.concrnt.hyperproxy.summary
+        host: hyperproxy
+        port: 8000
+        path: /summary
+        preservePath: true
+      - name: world.concrnt.hyperproxy.image
+        host: hyperproxy
+        port: 8000
+        path: /image
+        preservePath: true
+{{- end }}
+{{- if .Values.search.enabled }}
+      - name: net.concrnt.search
+        host: cc-search
+        port: 8000
+        path: /search
+{{- end }}
+      - name: world.concrnt.web
+        host: web
+        port: 80
+        path: /
+        preservePath: true

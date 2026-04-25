@@ -1,0 +1,393 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ccgateway
+  template:
+    metadata:
+      labels:
+        name: ccgateway
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/concrnt-config.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: ccgateway
+        image: {{ .Values.concrnt.gatewayimage }}
+        ports:
+          - name: web
+            containerPort: 8080
+        env:
+          - name: CONCRNT_CONFIGS
+            value: {{ .Values.concrnt.configpaths | quote }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        volumeMounts:
+          - name: concrnt-config
+            mountPath: /etc/concrnt/config
+            readOnly: true
+          - name: concrnt-static
+            mountPath: /etc/concrnt/static
+            readOnly: true
+{{- if .Values.concrnt.useSecret }}
+          - name: concrnt-secret
+            mountPath: /etc/concrnt/secret
+            readOnly: true
+{{- end }}
+      volumes:
+        - name: concrnt-config
+          configMap:
+            name: concrnt-config
+        - name: concrnt-static
+          configMap:
+            name: concrnt-static
+{{- if .Values.concrnt.useSecret }}
+        - name: concrnt-secret
+          secret:
+            secretName: concrnt-secret
+{{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ccapi
+  template:
+    metadata:
+      labels:
+        name: ccapi
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/concrnt-config.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: ccapi
+        image: {{ .Values.concrnt.appimage }}
+        ports:
+          - name: web
+            containerPort: 8000
+        env:
+          - name: CONCRNT_CONFIGS
+            value: {{ .Values.concrnt.configpaths | quote }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        volumeMounts:
+          - name: concrnt-config
+            mountPath: /etc/concrnt/config
+{{- if .Values.concrnt.useSecret }}
+          - name: concrnt-secret
+            mountPath: /etc/concrnt/secret
+            readOnly: true
+{{- end }}
+      volumes:
+        - name: concrnt-config
+          configMap:
+            name: concrnt-config
+{{- if .Values.concrnt.useSecret }}
+        - name: concrnt-secret
+          secret:
+            secretName: concrnt-secret
+{{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: concrnt2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: concrnt2
+  template:
+    metadata:
+      labels:
+        name: concrnt2
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/concrnt2-config.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: concrnt2
+        image: {{ .Values.concrnt2.appimage }}
+        ports:
+          - name: web
+            containerPort: 8000
+        env:
+          - name: CONCRNT_CONFIGS
+            value: {{ .Values.concrnt2.configpaths | quote }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        volumeMounts:
+          - name: concrnt2-config
+            mountPath: /etc/concrnt/config
+{{- if .Values.concrnt2.useSecret }}
+          - name: concrnt-secret
+            mountPath: /etc/concrnt/secret
+            readOnly: true
+{{- end }}
+      volumes:
+        - name: concrnt-config
+          configMap:
+            name: concrnt-config
+{{- if .Values.concrnt2.useSecret }}
+        - name: concrnt-secret
+          secret:
+            secretName: concrnt-secret
+{{- end }}
+
+
+---
+
+{{- if .Values.activitypub.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccactivitypub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ccactivitypub
+  template:
+    metadata:
+      labels:
+        name: ccactivitypub
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/activitypub-config.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: ccactivitypub
+        image: {{ .Values.activitypub.image }}
+        ports:
+          - name: web
+            containerPort: 8000
+        env:
+          - name: CCWORLD_AP_BRIDGE_CONFIGS
+            value: {{ .Values.activitypub.configpaths | quote }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        volumeMounts:
+          - name: activitypub-config
+            mountPath: /etc/concrnt/config
+{{- if .Values.activitypub.useSecret }}
+          - name: activitypub-secret
+            mountPath: /etc/concrnt/secret
+            readOnly: true
+{{- end }}
+      volumes:
+        - name: activitypub-config
+          configMap:
+            name: activitypub-config
+{{- if .Values.activitypub.useSecret }}
+        - name: activitypub-secret
+          secret:
+            secretName: activitypub-secret
+{{- end }}
+{{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccwebui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ccwebui
+  template:
+    metadata:
+      labels:
+        name: ccwebui
+    spec:
+      containers:
+      - name: ccwebui
+        image: {{ .Values.concrnt.webimage }}
+        ports:
+          - name: web
+            containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /web/index.html
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 3
+
+---
+
+{{- if .Values.memcached.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: concurrent-memcached
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: concurrent-memcached
+  template:
+    metadata:
+      labels:
+        name: concurrent-memcached
+    spec:
+      containers:
+      - name: memcached
+        image: docker.io/memcached:1.6-bookworm
+        ports:
+          - name: memcached
+            containerPort: 11211
+{{- if .Values.memcached.createExporter }}
+      - name: memcached-exporter
+        image: docker.io/prom/memcached-exporter:v0.6.0
+        ports:
+          - name: memcached-expr
+            containerPort: 9150
+        args:
+          - '--memcached.address=localhost:11211'
+{{- end }}
+{{- end }}
+
+---
+{{ if .Values.mediaserver.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediaserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mediaserver
+  template:
+    metadata:
+      labels:
+        name: mediaserver
+    spec:
+      containers:
+      - name: mediaserver
+        image: {{ .Values.mediaserver.image }}
+        ports:
+          - name: web
+            containerPort: 8000
+{{- if .Values.mediaserver.useSecret }}
+        envFrom:
+          - secretRef:
+              name: mediaserver-secret
+{{- else }}
+        env:
+          - name: bucketName
+            value: {{ .Values.mediaserver.bucketName | quote }}
+          - name: endpointUrl
+            value: {{ .Values.mediaserver.endpointUrl | quote }}
+          - name: accessKeyId
+            value: {{ .Values.mediaserver.accessKeyId | quote }}
+          - name: accessKeySecret
+            value: {{ .Values.mediaserver.accessKeySecret | quote }}
+          - name: publicBaseUrl
+            value: {{ .Values.mediaserver.publicBaseUrl | quote }}
+          - name: db_dsn
+            value: {{ .Values.server.dsn | quote }}
+          - name: quota
+            value: {{ .Values.mediaserver.quota | quote }}
+          - name: region
+            value: {{ .Values.mediaserver.region | quote }}
+{{- end }}
+{{- end }}
+
+---
+{{ if .Values.hyperproxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hyperproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: hyperproxy
+  template:
+    metadata:
+      labels:
+        name: hyperproxy
+    spec:
+      containers:
+        - name: hyperproxy
+          image: {{ .Values.hyperproxy.image }}
+          ports:
+            - name: web
+              containerPort: 8000
+          env:
+            - name: PORT
+              value: "8000"
+            - name: MEMCACHED_HOST
+              value: {{ .Values.server.memcachedAddr | quote }}
+{{ end }}
+
+---
+{{ if .Values.search.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cc-search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cc-search
+  template:
+    metadata:
+      labels:
+        name: cc-search
+    spec:
+      containers:
+      - name: cc-search
+        image: {{ .Values.search.image }}
+        ports:
+          - containerPort: 8000
+{{- if .Values.search.useSecret }}
+        envFrom:
+          - secretRef:
+              name: search-secret
+{{- else }}
+        env:
+          - name: DB_DSN
+            value: {{ .Values.server.dsn | quote }}
+          - name: REDIS_URL
+            value: {{ .Values.server.redisAddr | quote }}
+          - name: MEILISEARCH_URL
+            value: {{ .Values.search.meilisearchUrl | quote }}
+          - name: MEILISEARCH_KEY
+            value: {{ .Values.search.meilisearchKey | quote }}
+          - name: MEILISEARCH_IDX
+            value: {{ .Values.search.meilisearchIdx | quote }}
+          - name: PORT
+            value: "8000"
+{{- end }}
+{{- end }}
+

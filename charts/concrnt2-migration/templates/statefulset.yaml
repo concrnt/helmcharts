@@ -1,0 +1,143 @@
+{{- if .Values.postgres.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: concurrent-db
+spec:
+  replicas: 1
+  serviceName: concurrent-db
+  selector:
+    matchLabels:
+      name: concurrent-db
+  template:
+    metadata:
+      labels:
+        name: concurrent-db
+    spec:
+      containers:
+        - name: posgresql
+          image: docker.io/postgres:16-bookworm
+          ports:
+            - name: postgres
+              containerPort: 5432
+{{- if .Values.postgres.useSecret }}
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+{{- else }}
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: concrnt
+{{- end }}
+          volumeMounts:
+            - name: postgres-varlib
+              mountPath: {{ .Values.postgres.mountPath }}
+{{- if .Values.postgres.createExporter }}
+        - name: postgres-exporter
+          image: quay.io/prometheuscommunity/postgres-exporter
+          ports:
+            - name: postgres-expr
+              containerPort: 9187
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+{{- end }}
+      volumes:
+        - name: postgres-varlib
+          persistentVolumeClaim:
+            claimName: postgres-varlib
+{{- end }}
+
+---
+{{- if .Values.meilisearch.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: meilisearch
+spec:
+  serviceName: meilisearch
+  replicas: 1
+  selector:
+    matchLabels:
+      name: meilisearch
+  template:
+    metadata:
+      labels:
+        name: meilisearch
+    spec:
+      containers:
+      - name: meilisearch
+        image: {{ .Values.meilisearch.image }}
+        ports:
+          - containerPort: 7700
+{{- if .Values.meilisearch.useSecret }}
+        envFrom:
+          - secretRef:
+              name: meilisearch-secret
+{{- else }}
+        env:
+          - name: MEILI_MASTER_KEY
+            value: {{ .Values.search.meilisearchKey }}
+{{- end }}
+        volumeMounts:
+          - name: meilisearch-data
+            mountPath: /data.ms
+  volumeClaimTemplates:
+  - metadata:
+      name: meilisearch-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.meilisearch.storage }}
+{{- end}}
+
+---
+
+{{- if .Values.redis.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: concurrent-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: concurrent-redis
+  template:
+    metadata:
+      labels:
+        name: concurrent-redis
+    spec:
+      containers:
+      - name: redis
+        image: docker.io/redis:7-bookworm
+        ports:
+          - name: redis
+            containerPort: 6379
+        volumeMounts:
+          - name: redis-data
+            mountPath: /data
+{{- if .Values.redis.createExporter }}
+      - name: redis-exporter
+        image: docker.io/oliver006/redis_exporter:v1.6.0-alpine
+        ports:
+          - name: redis-exporter
+            containerPort: 9121
+        args:
+          - "--redis.addr=redis://localhost:6379"
+{{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.redis.storage }}
+{{- end }}
+
