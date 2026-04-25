@@ -29,7 +29,7 @@ concrnt:
 
 concrnt2:
   appimage: ghcr.io/concrnt/ccapi:v1.7.4
-  webimage: ghcr.io/concrnt/world-app:main
+  webimage: ghcr.io/concrnt/concrnt-web:main
 
   servicetype: ClusterIP
   fqdn: example.tld
