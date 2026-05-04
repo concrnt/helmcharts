@@ -141,6 +141,9 @@ spec:
         volumeMounts:
           - name: concrnt2-config
             mountPath: /etc/concrnt/config
+          - name: concrnt-static
+            mountPath: /etc/concrnt/static
+            readOnly: true
 {{- if .Values.concrnt2.useSecret }}
           - name: concrnt-secret
             mountPath: /etc/concrnt/secret
@@ -150,6 +153,9 @@ spec:
         - name: concrnt2-config
           configMap:
             name: concrnt2-config
+        - name: concrnt-static
+          configMap:
+            name: concrnt-static
 {{- if .Values.concrnt2.useSecret }}
         - name: concrnt-secret
           secret:
