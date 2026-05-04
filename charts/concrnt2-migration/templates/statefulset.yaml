@@ -141,3 +141,63 @@ spec:
           storage: {{ .Values.redis.storage }}
 {{- end }}
 
+---
+{{- if .Values.postgres.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: v2db
+spec:
+  replicas: 1
+  serviceName: v2db
+  selector:
+    matchLabels:
+      name: v2db
+  template:
+    metadata:
+      labels:
+        name: v2db
+    spec:
+      containers:
+        - name: posgresql
+          image: docker.io/postgres:18-bookworm
+          ports:
+            - name: postgres
+              containerPort: 5432
+{{- if .Values.postgres.useSecret }}
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+{{- else }}
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: concrnt
+{{- end }}
+          volumeMounts:
+            - name: postgres-varlib
+              mountPath: {{ .Values.postgres.mountPath }}
+{{- if .Values.postgres.createExporter }}
+        - name: postgres-exporter
+          image: quay.io/prometheuscommunity/postgres-exporter
+          ports:
+            - name: postgres-expr
+              containerPort: 9187
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+{{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-varlib
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.postgres.storage }}
+{{- end }}
+

@@ -1,6 +1,6 @@
 server:
   dsn: "host=db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
-  dsn2: "host=db user=postgres password=postgres dbname=concrnt2 port=5432 sslmode=disable"
+  dsn2: "host=v2db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
   redisAddr: "redis:6379"
   memcachedAddr: "memcached:11211"
   captchaSitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"

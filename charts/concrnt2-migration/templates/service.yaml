@@ -118,6 +118,25 @@ spec:
 
 ---
 
+{{- if .Values.postgres.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: v2db
+  labels:
+    name: v2db
+spec:
+  ports:
+  - port: 5432
+    targetPort: postgres
+    protocol: TCP
+  selector:
+    name: v2db
+  type: ClusterIP
+{{- end }}
+
+---
+
 {{- if .Values.redis.enabled }}
 apiVersion: v1
 kind: Service
