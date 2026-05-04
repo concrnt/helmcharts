@@ -160,7 +160,7 @@ spec:
               - configMap:
                   name: concrnt2-config
               - secret:
-                  name: concrnt-secret
+                  name: concrnt2-secret
 {{- else }}
         - name: concrnt2-config
           configMap:

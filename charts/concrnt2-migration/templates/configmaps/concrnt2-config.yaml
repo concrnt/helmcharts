@@ -35,7 +35,12 @@ data:
       - name: net.concrnt.legacy
         host: ccgateway
         port: 80
-        path: /api/v1
+        paths:
+          - /api/v1
+          - /ap
+          - .wellknown/webfinger
+          - .wellknown/nodeinfo
+          - .wellknown/host-meta
         preservePath: true
 {{- if .Values.mediaserver.enabled }}
       - name: world.concrnt.mediaserver
