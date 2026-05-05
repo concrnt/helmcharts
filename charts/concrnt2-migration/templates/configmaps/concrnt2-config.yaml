@@ -44,8 +44,8 @@ data:
         preservePath: true
 {{- if .Values.mediaserver.enabled }}
       - name: world.concrnt.mediaserver
-        host: host.docker.internal
-        port: 8001
+        host: mediaserver
+        port: 8000
         path: /storage
 {{- end }}
 {{- if .Values.hyperproxy.enabled }}
