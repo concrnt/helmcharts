@@ -190,6 +190,21 @@ spec:
   selector:
     name: mediaserver
   type: ClusterIP
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediaserver2
+  labels:
+    name: mediaserver2
+spec:
+  ports:
+  - port: 8000
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: mediaserver2
+  type: ClusterIP
 {{- end }}
 
 ---

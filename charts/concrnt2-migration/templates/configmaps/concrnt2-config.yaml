@@ -41,12 +41,13 @@ data:
           - .wellknown/webfinger
           - .wellknown/nodeinfo
           - .wellknown/host-meta
+          - /storage
         preservePath: true
 {{- if .Values.mediaserver.enabled }}
       - name: world.concrnt.mediaserver
         host: mediaserver
         port: 8000
-        path: /storage
+        path: /storage2
 {{- end }}
 {{- if .Values.hyperproxy.enabled }}
       - name: world.concrnt.hyperproxy.summary
