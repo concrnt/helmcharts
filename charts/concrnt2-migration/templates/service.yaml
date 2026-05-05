@@ -190,7 +190,7 @@ spec:
   selector:
     name: mediaserver
   type: ClusterIP
-
+---
 apiVersion: v1
 kind: Service
 metadata:
