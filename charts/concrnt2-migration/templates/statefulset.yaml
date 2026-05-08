@@ -179,7 +179,7 @@ spec:
 {{- end }}
           volumeMounts:
             - name: postgres-varlib
-              mountPath: {{ .Values.postgres.mountPath }}
+              mountPath: {{ .Values.postgres.mountPath2 }}
 {{- if .Values.postgres.createExporter }}
         - name: postgres-exporter
           image: quay.io/prometheuscommunity/postgres-exporter

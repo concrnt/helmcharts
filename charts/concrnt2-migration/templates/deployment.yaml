@@ -375,7 +375,7 @@ spec:
 {{- if .Values.mediaserver.useSecret }}
         envFrom:
           - secretRef:
-              name: mediaserver-secret
+              name: mediaserver2-secret
 {{- else }}
         env:
           - name: bucketName
@@ -389,7 +389,7 @@ spec:
           - name: publicBaseUrl
             value: {{ .Values.mediaserver.publicBaseUrl | quote }}
           - name: db_dsn
-            value: {{ .Values.server.dsn | quote }}
+            value: {{ .Values.server.dsn2 | quote }}
           - name: quota
             value: {{ .Values.mediaserver.quota | quote }}
           - name: region

@@ -8,7 +8,7 @@ data:
       fqdn: {{ .Values.concrnt.fqdn }}
       registration: {{ .Values.concrnt.registration }}
       privatekey: {{ .Values.concrnt.privatekey }}
-      dimension: {{ .Values.concrnt.dimension }}
+      layer: {{ .Values.concrnt.layer }}
       debug: true
     
     backends:
