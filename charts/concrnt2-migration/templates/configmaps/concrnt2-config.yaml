@@ -5,10 +5,10 @@ metadata:
 data:
   config.yaml: |-
     concrnt:
-      fqdn: {{ .Values.concrnt.fqdn }}
-      registration: {{ .Values.concrnt.registration }}
-      privatekey: {{ .Values.concrnt.privatekey }}
-      layer: {{ .Values.concrnt.layer }}
+      fqdn: {{ .Values.concrnt2.fqdn }}
+      registration: {{ .Values.concrnt2.registration }}
+      privatekey: {{ .Values.concrnt2.privatekey }}
+      layer: {{ .Values.concrnt2.layer }}
       debug: true
     
     backends:
