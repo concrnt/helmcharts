@@ -43,9 +43,9 @@ data:
         paths:
           - /api/v1
           - /ap
-          - .wellknown/webfinger
-          - .wellknown/nodeinfo
-          - .wellknown/host-meta
+          - .well-known/webfinger
+          - .well-known/nodeinfo
+          - .well-known/host-meta
           - /storage
         preservePath: true
 {{- if .Values.mediaserver.enabled }}
