@@ -50,7 +50,7 @@ data:
         preservePath: true
 {{- if .Values.mediaserver.enabled }}
       - name: world.concrnt.mediaserver
-        host: mediaserver
+        host: mediaserver2
         port: 8000
         path: /storage2
 {{- end }}
