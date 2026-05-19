@@ -116,6 +116,7 @@ postgres:
   enabled: true
   storage: "1Gi"
   mountPath: "/var/lib/postgresql/data"
+  mountPath2: "/var/lib/postgresql"
   createExporter: false
   useSecret: false
 
