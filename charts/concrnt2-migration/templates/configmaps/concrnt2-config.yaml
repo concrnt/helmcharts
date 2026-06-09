@@ -43,6 +43,7 @@ data:
         paths:
           - /api/v1
           - /ap
+          - /services
           - .well-known/webfinger
           - .well-known/nodeinfo
           - .well-known/host-meta
