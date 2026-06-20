@@ -14,8 +14,8 @@ data:
     backends:
       postgresDsn: {{ .Values.server.dsn2 }}
       gatewayAddr: http://concrnt2
-      redisAddr: {{ .Values.server.redisAddr }}
-      memcachedAddr: {{ .Values.server.memcachedAddr }}
+      redisAddr: {{ .Values.server.redisAddr2 }}
+      memcachedAddr: {{ .Values.server.memcachedAddr2 }}
     
     observability:
       enableTrace: {{ .Values.observability.enableTrace }}

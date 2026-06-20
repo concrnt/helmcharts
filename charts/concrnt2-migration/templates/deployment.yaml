@@ -304,6 +304,37 @@ spec:
         args:
           - '--memcached.address=localhost:11211'
 {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: v2-memcached
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: v2-memcached
+  template:
+    metadata:
+      labels:
+        name: v2-memcached
+    spec:
+      containers:
+      - name: memcached
+        image: docker.io/memcached:1.6-bookworm
+        ports:
+          - name: memcached
+            containerPort: 11211
+{{- if .Values.memcached.createExporter }}
+      - name: memcached-exporter
+        image: docker.io/prom/memcached-exporter:v0.6.0
+        ports:
+          - name: memcached-expr
+            containerPort: 9150
+        args:
+          - '--memcached.address=localhost:11211'
+{{- end }}
+
 {{- end }}
 
 ---

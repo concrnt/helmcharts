@@ -152,6 +152,22 @@ spec:
   selector:
     name: concurrent-redis
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: v2-redis
+  labels:
+    name: v2-redis
+spec:
+  ports:
+  - port: 6379
+    targetPort: redis
+    protocol: TCP
+  selector:
+    name: v2-redis
+  type: ClusterIP
+
 {{- end }}
 
 ---
@@ -171,6 +187,22 @@ spec:
   selector:
     name: concurrent-memcached
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: v2-memcached
+  labels:
+    name: v2-memcached
+spec:
+  ports:
+  - port: 11211
+    targetPort: memcached
+    protocol: TCP
+  selector:
+    name: v2-memcached
+  type: ClusterIP
+
 {{- end }}
 
 ---

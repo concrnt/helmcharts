@@ -2,7 +2,9 @@ server:
   dsn: "host=db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
   dsn2: "host=v2db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
   redisAddr: "redis:6379"
+  redisAddr2: "v2-redis:6379"
   memcachedAddr: "memcached:11211"
+  memcachedAddr2: "v2-memcached:11211"
   captchaSitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
   captchaSecret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
   vapidPublicKey: ""
@@ -28,7 +30,7 @@ concrnt:
   configpaths: "" # "/etc/concrnt/config/config.yaml:/etc/concrnt/secret/config.yaml"
 
 concrnt2:
-  appimage: ghcr.io/concrnt/concrnt:v2.0.0-beta12
+  appimage: ghcr.io/concrnt/concrnt:v2.0.0-beta21
   webimage: ghcr.io/concrnt/concrnt-web:main
 
   servicetype: ClusterIP

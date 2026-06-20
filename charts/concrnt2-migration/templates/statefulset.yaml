@@ -139,6 +139,47 @@ spec:
       resources:
         requests:
           storage: {{ .Values.redis.storage }}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: v2-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: v2-redis
+  template:
+    metadata:
+      labels:
+        name: v2-redis
+    spec:
+      containers:
+      - name: redis
+        image: docker.io/redis:7-bookworm
+        ports:
+          - name: redis
+            containerPort: 6379
+        volumeMounts:
+          - name: redis-data
+            mountPath: /data
+{{- if .Values.redis.createExporter }}
+      - name: redis-exporter
+        image: docker.io/oliver006/redis_exporter:v1.6.0-alpine
+        ports:
+          - name: redis-exporter
+            containerPort: 9121
+        args:
+          - "--redis.addr=redis://localhost:6379"
+{{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.redis.storage }}
 {{- end }}
 
 ---
