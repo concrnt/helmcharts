@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: concrnt2-config
+data:
+  config.yaml: |-
+    concrnt:
+      fqdn: {{ .Values.concrnt2.fqdn }}
+      registration: {{ .Values.concrnt2.registration }}
+      privatekey: {{ .Values.concrnt2.privatekey }}
+      layer: {{ .Values.concrnt2.layer }}
+      debug: {{ .Values.concrnt2.debug }}
+{{- if .Values.concrnt2.cluster.enabled }}
+      cluster:
+        enable: true
+        electorEndpoint: "http://127.0.0.1:8002"
+{{- end }}
+
+    backends:
+      postgresDsn: {{ .Values.server.dsn }}
+      gatewayAddr: http://concrnt2
+      redisAddr: {{ .Values.server.redisAddr }}
+      memcachedAddr: {{ .Values.server.memcachedAddr }}
+
+    observability:
+      enableTrace: {{ .Values.observability.enableTrace }}
+      traceEndpoint: {{ .Values.observability.traceEndpoint }}
+
+    integrations:
+      captchaSiteKey: {{ .Values.server.captchaSitekey }}
+      captchaSecret: {{ .Values.server.captchaSecret }}
+      vapidPublicKey: {{ .Values.server.vapidPublicKey | quote }}
+      vapidPrivateKey: {{ .Values.server.vapidPrivateKey | quote }}
+
+    meta:
+      nickname: {{ .Values.profile.nickname }}
+      description: {{ .Values.profile.description }}
+      logo: {{ .Values.profile.logo }}
+      wordmark: {{ .Values.profile.wordmark }}
+      themeColor: {{ .Values.profile.themeColor | quote }}
+      maintainerName: {{ .Values.profile.maintainerName }}
+      maintainerEmail: {{ .Values.profile.maintainerEmail }}
+
+    services:
+{{- if .Values.mediaserver.enabled }}
+      - name: world.concrnt.mediaserver
+        host: mediaserver2
+        port: 8000
+        path: /storage2
+{{- end }}
+{{- if .Values.hyperproxy.enabled }}
+      - name: world.concrnt.hyperproxy.summary
+        host: hyperproxy
+        port: 8000
+        path: /summary
+        preservePath: true
+      - name: world.concrnt.hyperproxy.image
+        host: hyperproxy
+        port: 8000
+        path: /image
+        preservePath: true
+{{- end }}
+{{- if .Values.search.enabled }}
+      - name: net.concrnt.search
+        host: cc-search
+        port: 8000
+        path: /search
+{{- end }}
+      - name: world.concrnt.web
+        host: world-app
+        port: 80
+        path: /
+        preservePath: true

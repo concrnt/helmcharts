@@ -1,0 +1,177 @@
+# public entrypoint (put your Ingress in front of this)
+apiVersion: v1
+kind: Service
+metadata:
+  name: concrnt2
+  labels:
+    name: concrnt2
+spec:
+  ports:
+  - port: 80
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: concrnt2
+  type: {{ .Values.concrnt2.servicetype }}
+
+---
+
+{{- if .Values.concrnt2.cluster.enabled }}
+# headless service: DNS-resolves to every replica so the elector sidecar can
+# report the peer list. publishNotReadyAddresses keeps draining pods (which
+# may still hold websocket clients) in the demand aggregation.
+apiVersion: v1
+kind: Service
+metadata:
+  name: concrnt2-headless
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  selector:
+    name: concrnt2
+  ports:
+    - name: internal
+      port: 8001
+      targetPort: internal
+{{- end }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: world-app
+  labels:
+    name: world-app
+spec:
+  ports:
+  - port: 80
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: world-app
+  type: ClusterIP
+
+---
+
+{{- if .Values.postgres.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: v2db
+  labels:
+    name: v2db
+spec:
+  ports:
+  - port: 5432
+    targetPort: postgres
+    protocol: TCP
+  selector:
+    name: v2db
+  type: ClusterIP
+{{- end }}
+
+---
+
+{{- if .Values.redis.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: v2-redis
+  labels:
+    name: v2-redis
+spec:
+  ports:
+  - port: 6379
+    targetPort: redis
+    protocol: TCP
+  selector:
+    name: v2-redis
+  type: ClusterIP
+{{- end }}
+
+---
+
+{{- if .Values.memcached.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: v2-memcached
+  labels:
+    name: v2-memcached
+spec:
+  ports:
+  - port: 11211
+    targetPort: memcached
+    protocol: TCP
+  selector:
+    name: v2-memcached
+  type: ClusterIP
+{{- end }}
+
+---
+
+{{- if .Values.mediaserver.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediaserver2
+  labels:
+    name: mediaserver2
+spec:
+  ports:
+  - port: 8000
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: mediaserver2
+  type: ClusterIP
+{{- end }}
+
+---
+{{- if .Values.hyperproxy.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: hyperproxy
+spec:
+  selector:
+    name: hyperproxy
+  ports:
+    - port: 8000
+      targetPort: web
+      protocol: TCP
+  type: ClusterIP
+{{- end }}
+
+---
+{{- if .Values.search.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: cc-search
+spec:
+  selector:
+    name: cc-search
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+{{- end }}
+
+---
+{{- if .Values.meilisearch.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: meilisearch
+spec:
+  selector:
+    name: meilisearch
+  ports:
+    - protocol: TCP
+      port: 7700
+      targetPort: 7700
+  type: ClusterIP
+{{- end }}

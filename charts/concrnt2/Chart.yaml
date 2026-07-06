@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: "2.0.0"
+description: A Helm chart for concrnt v2
+name: concrnt2
+version: 0.1.0
+icon: https://square.concrnt.net/assets/Concrnt-Logo-Circle.png

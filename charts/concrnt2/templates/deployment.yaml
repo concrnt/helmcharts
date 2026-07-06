@@ -1,0 +1,279 @@
+# All concrnt2 pods serve the public API on :8000 and can be scaled freely
+# when cluster is enabled. :8001 is the internal (operational) listener:
+# /health and /ready probes plus the replica-to-replica coordination API.
+# The pod whose elector sidecar holds the Lease runs the singleton workers
+# (federation subscriber, chunkline cache updater, web push reactor).
+# Ports 8001/8002 are cluster-internal — never expose them via an Ingress.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: concrnt2
+spec:
+  replicas: {{ .Values.concrnt2.replicas }}
+  selector:
+    matchLabels:
+      name: concrnt2
+  template:
+    metadata:
+      labels:
+        name: concrnt2
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/concrnt2-config.yaml") . | sha256sum }}
+    spec:
+{{- if .Values.concrnt2.cluster.enabled }}
+      serviceAccountName: concrnt2
+{{- end }}
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: concrnt2
+        image: {{ .Values.concrnt2.appimage }}
+        ports:
+          - name: web
+            containerPort: 8000
+          - name: internal
+            containerPort: 8001
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: internal
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: internal
+          initialDelaySeconds: 3
+          periodSeconds: 10
+        volumeMounts:
+          - name: concrnt2-config
+            mountPath: /etc/concrnt/config
+            readOnly: true
+          - name: concrnt-static
+            mountPath: /etc/concrnt/static
+            readOnly: true
+{{- if .Values.concrnt2.cluster.enabled }}
+      - name: elector
+        image: {{ .Values.concrnt2.electorimage }}
+        ports:
+          - name: elector
+            containerPort: 8002
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: ADVERTISE_URL
+            value: "http://$(POD_IP):8001"
+          - name: HEADLESS_SERVICE
+            value: "concrnt2-headless"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: elector
+          periodSeconds: 10
+{{- end }}
+      volumes:
+        - name: concrnt-static
+          configMap:
+            name: concrnt-static
+{{- if .Values.concrnt2.useSecret }}
+        - name: concrnt2-config
+          projected:
+            sources:
+              - configMap:
+                  name: concrnt2-config
+              - secret:
+                  name: concrnt2-secret
+{{- else }}
+        - name: concrnt2-config
+          configMap:
+            name: concrnt2-config
+{{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: world-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: world-app
+  template:
+    metadata:
+      labels:
+        name: world-app
+    spec:
+      containers:
+      - name: world-app
+        image: {{ .Values.concrnt2.webimage }}
+        ports:
+          - name: web
+            containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /web/index.html
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 3
+
+---
+
+{{- if .Values.memcached.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: v2-memcached
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: v2-memcached
+  template:
+    metadata:
+      labels:
+        name: v2-memcached
+    spec:
+      containers:
+      - name: memcached
+        image: docker.io/memcached:1.6-bookworm
+        ports:
+          - name: memcached
+            containerPort: 11211
+{{- if .Values.memcached.createExporter }}
+      - name: memcached-exporter
+        image: docker.io/prom/memcached-exporter:v0.6.0
+        ports:
+          - name: memcached-expr
+            containerPort: 9150
+        args:
+          - '--memcached.address=localhost:11211'
+{{- end }}
+{{- end }}
+
+---
+{{ if .Values.mediaserver.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediaserver2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mediaserver2
+  template:
+    metadata:
+      labels:
+        name: mediaserver2
+    spec:
+      containers:
+      - name: mediaserver2
+        image: {{ .Values.mediaserver.image }}
+        ports:
+          - name: web
+            containerPort: 8000
+{{- if .Values.mediaserver.useSecret }}
+        envFrom:
+          - secretRef:
+              name: mediaserver2-secret
+{{- else }}
+        env:
+          - name: bucketName
+            value: {{ .Values.mediaserver.bucketName | quote }}
+          - name: endpointUrl
+            value: {{ .Values.mediaserver.endpointUrl | quote }}
+          - name: accessKeyId
+            value: {{ .Values.mediaserver.accessKeyId | quote }}
+          - name: accessKeySecret
+            value: {{ .Values.mediaserver.accessKeySecret | quote }}
+          - name: publicBaseUrl
+            value: {{ .Values.mediaserver.publicBaseUrl | quote }}
+          - name: db_dsn
+            value: {{ .Values.server.dsn | quote }}
+          - name: quota
+            value: {{ .Values.mediaserver.quota | quote }}
+          - name: region
+            value: {{ .Values.mediaserver.region | quote }}
+{{- end }}
+{{- end }}
+
+---
+{{ if .Values.hyperproxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hyperproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: hyperproxy
+  template:
+    metadata:
+      labels:
+        name: hyperproxy
+    spec:
+      containers:
+        - name: hyperproxy
+          image: {{ .Values.hyperproxy.image }}
+          ports:
+            - name: web
+              containerPort: 8000
+          env:
+            - name: PORT
+              value: "8000"
+            - name: MEMCACHED_HOST
+              value: {{ .Values.server.memcachedAddr | quote }}
+{{ end }}
+
+---
+{{ if .Values.search.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cc-search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cc-search
+  template:
+    metadata:
+      labels:
+        name: cc-search
+    spec:
+      containers:
+      - name: cc-search
+        image: {{ .Values.search.image }}
+        ports:
+          - containerPort: 8000
+{{- if .Values.search.useSecret }}
+        envFrom:
+          - secretRef:
+              name: search-secret
+{{- else }}
+        env:
+          - name: DB_DSN
+            value: {{ .Values.server.dsn | quote }}
+          - name: REDIS_URL
+            value: {{ .Values.server.redisAddr | quote }}
+          - name: MEILISEARCH_URL
+            value: {{ .Values.search.meilisearchUrl | quote }}
+          - name: MEILISEARCH_KEY
+            value: {{ .Values.search.meilisearchKey | quote }}
+          - name: MEILISEARCH_IDX
+            value: {{ .Values.search.meilisearchIdx | quote }}
+          - name: PORT
+            value: "8000"
+{{- end }}
+{{- end }}

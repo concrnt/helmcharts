@@ -1,0 +1,28 @@
+{{- if .Values.concrnt2.cluster.enabled }}
+# the k8s-elector sidecar elects the leader via a coordination.k8s.io Lease
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: concrnt2
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: concrnt2-leader-election
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "create", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: concrnt2-leader-election
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: concrnt2-leader-election
+subjects:
+  - kind: ServiceAccount
+    name: concrnt2
+{{- end }}

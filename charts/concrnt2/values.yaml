@@ -1,0 +1,125 @@
+server:
+  # backend names are kept from the concrnt2-migration chart (v2db, v2-redis,
+  # v2-memcached) so an in-place `helm upgrade` from that chart keeps the
+  # existing StatefulSets and their PVCs (= your data)
+  dsn: "host=v2db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
+  redisAddr: "v2-redis:6379"
+  memcachedAddr: "v2-memcached:11211"
+  captchaSitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+  captchaSecret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+  vapidPublicKey: ""
+  vapidPrivateKey: ""
+
+observability:
+  createPodMonitors: false
+  enableTrace: false
+  traceEndpoint: "alloy:4318"
+
+concrnt2:
+  appimage: ghcr.io/concrnt/concrnt:latest
+  electorimage: ghcr.io/concrnt/k8s-elector:latest
+  webimage: ghcr.io/concrnt/concrnt-web:main
+
+  servicetype: ClusterIP
+  fqdn: example.tld
+  registration: invite
+  privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  layer: concrnt-mainnet
+  debug: false
+
+  replicas: 1
+  # cluster runs the k8s-elector sidecar next to every replica (leader
+  # election via a coordination.k8s.io Lease + peer discovery via a headless
+  # service) so replicas can be scaled freely. enable it before setting
+  # replicas > 1.
+  cluster:
+    enabled: false
+
+  useSecret: false
+
+profile:
+  nickname: concrnt-domain
+  description: domain description
+  logo: ""
+  wordmark: ""
+  themeColor: "#20193b"
+  maintainerName: changeme
+  maintainerEmail: changeme@example.com
+
+search:
+  enabled: false
+  image: ghcr.io/concrnt/cc-search:v0.1.2
+  useSecret: false
+  meilisearchKey: "concrnt-meilisearch"
+  meilisearchUrl: "http://meilisearch:7700"
+  meilisearchIdx: "concrnt"
+
+mediaserver:
+  enabled: false
+  useSecret: false
+  image: ghcr.io/totegamma/cc-media-server:v1.0.0-beta4
+  bucketName: YOUR_BUCKET_NAME
+  endpointUrl: https://xxxxxx.r2.cloudflarestorage.com
+  accessKeyId: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  accessKeySecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  publicBaseUrl: https://pub-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.r2.dev/
+  region: auto
+  quota: "1000000000"
+
+hyperproxy:
+  enabled: true
+  image: ghcr.io/concrnt/hyperproxy:v0.4.1
+
+legal:
+  tos: ""
+  registerTemplate: |
+    {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "名前",
+          "description": "ご連絡が必要になった場合に用いる宛名　ハンドルネーム推奨"
+        },
+        "consent": {
+          "type": "boolean",
+          "title": "利用規約・行動規範およびプライバシーポリシーに同意します",
+          "default": null,
+          "enum": [
+            null,
+            true
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "consent"
+      ]
+    }
+  codeOfConduct: |
+    1. サーバーは日本国内に設置されています。日本の法律に従ってください。
+    2. 他者へのリスペクトを忘れないようにしましょう。
+    3. ユーザー名・アイコン・ステータスメッセージなどは他者を不快にさせるようなものは控え、投稿も内容によっては公開範囲をコントロールしましょう。
+    4. コミュニティタイムラインでは、そのコミュニティの趣旨をくみ取り、適切な投稿を心がけましょう。
+
+postgres:
+  enabled: true
+  storage: "1Gi"
+  mountPath: "/var/lib/postgresql"
+  createExporter: false
+  useSecret: false
+
+redis:
+  enabled: true
+  storage: "1Gi"
+  createExporter: false
+
+memcached:
+  enabled: true
+  createExporter: false
+
+meilisearch:
+  enabled: false
+  useSecret: false
+  image: docker.io/getmeili/meilisearch:prototype-japanese-13
+  storage: "1Gi"
