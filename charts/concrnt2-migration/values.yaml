@@ -80,7 +80,7 @@ activitypub:
 
 hyperproxy:
   enabled: true
-  image: ghcr.io/concrnt/hyperproxy:v0.4.1
+  image: ghcr.io/concrnt/hyperproxy:v0.5.0
 
 legal:
   tos: ""
