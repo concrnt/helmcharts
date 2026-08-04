@@ -42,13 +42,28 @@ data:
         port: 80
         paths:
           - /api/v1
+{{- if not (and .Values.activitypub2.enabled .Values.activitypub2.active) }}
           - /ap
+{{- end }}
           - /services
+{{- if not (and .Values.activitypub2.enabled .Values.activitypub2.active) }}
           - .well-known/webfinger
           - .well-known/nodeinfo
           - .well-known/host-meta
+{{- end }}
           - /storage
         preservePath: true
+{{- if and .Values.activitypub2.enabled .Values.activitypub2.active }}
+      - name: net.concrnt.activitypub
+        host: activitypub
+        port: 8008
+        paths:
+          - /ap
+          - .well-known/webfinger
+          - .well-known/nodeinfo
+          - .well-known/host-meta
+        preservePath: true
+{{- end }}
 {{- if .Values.mediaserver.enabled }}
       - name: world.concrnt.mediaserver
         host: mediaserver2

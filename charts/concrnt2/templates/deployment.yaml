@@ -277,3 +277,53 @@ spec:
             value: "8000"
 {{- end }}
 {{- end }}
+
+---
+
+{{- if .Values.activitypub2.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: activitypub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: activitypub
+  template:
+    metadata:
+      labels:
+        name: activitypub
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/activitypub2-config.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: activitypub
+        image: {{ .Values.activitypub2.image }}
+        ports:
+          - name: web
+            containerPort: 8008
+        env:
+          - name: CONFIG_PATH
+            value: /etc/concrnt/config/config.yaml
+        livenessProbe:
+          httpGet:
+            path: /ap/test
+            port: 8008
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        volumeMounts:
+          - name: activitypub2-config
+            mountPath: /etc/concrnt/config
+            readOnly: true
+      volumes:
+{{- if .Values.activitypub2.useSecret }}
+        - name: activitypub2-config
+          secret:
+            secretName: activitypub2-secret
+{{- else }}
+        - name: activitypub2-config
+          configMap:
+            name: activitypub2-config
+{{- end }}
+{{- end }}

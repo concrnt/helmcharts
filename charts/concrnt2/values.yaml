@@ -70,6 +70,21 @@ hyperproxy:
   enabled: true
   image: ghcr.io/concrnt/hyperproxy:v0.5.0
 
+# v2 ActivityPubブリッジ (github.com/concrnt/activitypub)
+# ブロック名はconcrnt2-migrationチャートと同じactivitypub2にしてあり、移行時の
+# values.yamlをそのまま持ち回れる(残っているv1用activitypub:ブロックは無視される)。
+# migrationチャートのactiveキーはこのチャートでは不要(enabledだけでデプロイと/ap経路登録が行われる)
+activitypub2:
+  enabled: false
+  useSecret: false
+  image: ghcr.io/concrnt/activitypub:latest
+  # ブリッジ用サービスアカウント(conctl operation create-account で作成)
+  ccid: con1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  # URL形式のみ(libpqキーワード形式は不可)。v2コアとDB・Redisを共有する
+  databaseUrl: "postgres://postgres:postgres@v2db:5432/concrnt"
+  redisUrl: "redis://v2-redis:6379"
+
 legal:
   tos: ""
   registerTemplate: |

@@ -40,6 +40,7 @@ concrnt2:
   layer: concrnt-mainnet
 
   useSecret: false
+  configpaths: "" # "/etc/concrnt/config/config.yaml:/etc/concrnt/secret/config.yaml"
 
 profile:
   nickname: concrnt-domain
@@ -77,6 +78,22 @@ activitypub:
   image: ghcr.io/concrnt/ccworld-ap-bridge:v0.6.5
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   configpaths: "" # "/etc/concrnt/config/config.yaml:/etc/concrnt/secret/config.yaml"
+
+# v2 ActivityPubブリッジ (github.com/concrnt/activitypub)
+# enabled: v2ブリッジをv1ブリッジと並列でデプロイする(公開経路はまだ変わらない)
+# active:  /ap と .well-known/{webfinger,nodeinfo,host-meta} の向き先をv1からv2へ切り替える
+#          (enabledがtrueのときのみ有効。conctl migrate ap-v1-to-v2 の完了後にtrueにすること)
+activitypub2:
+  enabled: false
+  active: false
+  useSecret: false
+  image: ghcr.io/concrnt/activitypub:latest
+  # ブリッジ用サービスアカウント(conctl operation create-account で作成)
+  ccid: con1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  # URL形式のみ(libpqキーワード形式は不可)。v2コアとDB・Redisを共有する
+  databaseUrl: "postgres://postgres:postgres@v2db:5432/concrnt"
+  redisUrl: "redis://v2-redis:6379"
 
 hyperproxy:
   enabled: true

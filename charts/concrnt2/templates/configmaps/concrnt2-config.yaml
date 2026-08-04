@@ -66,6 +66,17 @@ data:
         port: 8000
         path: /search
 {{- end }}
+{{- if .Values.activitypub2.enabled }}
+      - name: net.concrnt.activitypub
+        host: activitypub
+        port: 8008
+        paths:
+          - /ap
+          - .well-known/webfinger
+          - .well-known/nodeinfo
+          - .well-known/host-meta
+        preservePath: true
+{{- end }}
       - name: world.concrnt.web
         host: world-app
         port: 80

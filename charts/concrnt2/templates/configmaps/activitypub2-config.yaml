@@ -1,0 +1,21 @@
+{{- if and .Values.activitypub2.enabled (not .Values.activitypub2.useSecret) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: activitypub2-config
+data:
+  config.yaml: |-
+    server:
+      port: 8008
+
+    database:
+      url: {{ .Values.activitypub2.databaseUrl | quote }}
+
+    redis:
+      url: {{ .Values.activitypub2.redisUrl | quote }}
+
+    concrnt:
+      ccid: {{ .Values.activitypub2.ccid }}
+      domain: {{ .Values.concrnt2.fqdn }}
+      privateKey: {{ .Values.activitypub2.privatekey | quote }}
+{{- end }}

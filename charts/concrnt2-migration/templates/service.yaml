@@ -66,6 +66,25 @@ spec:
 {{- end }}
 
 ---
+
+{{- if .Values.activitypub2.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: activitypub
+  labels:
+    name: activitypub
+spec:
+  ports:
+  - port: 8008
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: activitypub
+  type: ClusterIP
+{{- end }}
+
+---
 apiVersion: v1
 kind: Service
 metadata:
