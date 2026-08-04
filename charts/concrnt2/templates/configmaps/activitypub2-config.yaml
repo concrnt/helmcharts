@@ -15,7 +15,6 @@ data:
       url: {{ .Values.activitypub2.redisUrl | quote }}
 
     concrnt:
-      ccid: {{ .Values.activitypub2.ccid }}
       domain: {{ .Values.concrnt2.fqdn }}
       privateKey: {{ .Values.activitypub2.privatekey | quote }}
 {{- end }}

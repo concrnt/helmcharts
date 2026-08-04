@@ -88,8 +88,8 @@ activitypub2:
   active: false
   useSecret: false
   image: ghcr.io/concrnt/activitypub:latest
-  # ブリッジ用サービスアカウント(conctl operation create-account で作成)
-  ccid: con1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  # ブリッジ用サービスアカウントの秘密鍵。v1ブリッジのアカウント(activitypub.privatekey)を
+  # 引き継ぐか、conctl operation create-account で新規作成する(ccidは鍵から導出される)
   privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   # URL形式のみ(libpqキーワード形式は不可)。v2コアとDB・Redisを共有する
   databaseUrl: "postgres://postgres:postgres@v2db:5432/concrnt"
