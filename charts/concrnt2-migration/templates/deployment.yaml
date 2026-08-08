@@ -245,7 +245,7 @@ spec:
             value: /etc/concrnt/config/config.yaml
         livenessProbe:
           httpGet:
-            path: /ap/test
+            path: /health
             port: 8008
           initialDelaySeconds: 10
           periodSeconds: 10
