@@ -16,5 +16,7 @@ data:
 
     concrnt:
       domain: {{ .Values.concrnt2.fqdn }}
+{{- if not .Values.activitypub2.useSecret }}
       privateKey: {{ .Values.activitypub2.privatekey | quote }}
+{{- end }}
 {{- end }}

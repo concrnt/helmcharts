@@ -35,6 +35,8 @@ concrnt2:
   cluster:
     enabled: false
 
+  # true時はConfigMapにprivatekeyを出力しないので、Secret concrnt2-secretの
+  # secret.yamlに必ずprivatekeyを含めること(欠落は起動時panicで検出される)
   useSecret: false
 
 profile:
@@ -78,7 +80,9 @@ activitypub2:
   enabled: false
   # concrnt2.useSecretと同じprojected方式: ConfigMapに加えてSecret activitypub2-secretを
   # 同じconfigディレクトリに重ねる。Secretのキーはsecret.yaml(config.yamlより後に読まれて
-  # 深いマージで上書きされる)で、privatekey等の秘匿値だけを部分YAMLで書く
+  # 深いマージで上書きされる)で、privatekey等の秘匿値だけを部分YAMLで書く。
+  # useSecret時はConfigMap側config.yamlにprivateKeyを出力しない(下のプレースホルダが
+  # 誤って使われる事故防止)ので、Secretに必ずprivateKeyを含めること(欠落は起動時エラー)
   useSecret: false
   image: ghcr.io/concrnt/activitypub:latest
   # ブリッジ用サービスアカウントの秘密鍵(conctl operation create-account で作成。

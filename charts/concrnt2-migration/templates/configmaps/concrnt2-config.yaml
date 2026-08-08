@@ -7,7 +7,9 @@ data:
     concrnt:
       fqdn: {{ .Values.concrnt2.fqdn }}
       registration: {{ .Values.concrnt2.registration }}
+{{- if not .Values.concrnt2.useSecret }}
       privatekey: {{ .Values.concrnt2.privatekey }}
+{{- end }}
       layer: {{ .Values.concrnt2.layer }}
       debug: true
     
