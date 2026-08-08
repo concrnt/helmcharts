@@ -305,7 +305,7 @@ spec:
             containerPort: 8008
         env:
           - name: CONFIG_PATH
-            value: /etc/concrnt/config/config.yaml
+            value: /etc/concrnt/activitypub/config
         livenessProbe:
           httpGet:
             path: /health
@@ -314,13 +314,17 @@ spec:
           periodSeconds: 10
         volumeMounts:
           - name: activitypub2-config
-            mountPath: /etc/concrnt/config
+            mountPath: /etc/concrnt/activitypub/config
             readOnly: true
       volumes:
 {{- if .Values.activitypub2.useSecret }}
         - name: activitypub2-config
-          secret:
-            secretName: activitypub2-secret
+          projected:
+            sources:
+              - configMap:
+                  name: activitypub2-config
+              - secret:
+                  name: activitypub2-secret
 {{- else }}
         - name: activitypub2-config
           configMap:

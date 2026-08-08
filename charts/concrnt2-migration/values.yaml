@@ -86,6 +86,9 @@ activitypub:
 activitypub2:
   enabled: false
   active: false
+  # concrnt2.useSecretと同じprojected方式: ConfigMapに加えてSecret activitypub2-secretを
+  # 同じconfigディレクトリに重ねる。Secretのキーはsecret.yaml(config.yamlより後に読まれて
+  # 深いマージで上書きされる)で、privatekey等の秘匿値だけを部分YAMLで書く
   useSecret: false
   image: ghcr.io/concrnt/activitypub:latest
   # ブリッジ用サービスアカウントの秘密鍵。v1ブリッジのアカウント(activitypub.privatekey)を
