@@ -16,7 +16,7 @@ observability:
   traceEndpoint: "alloy:4318"
 
 concrnt2:
-  appimage: ghcr.io/concrnt/concrnt:v1.10.24
+  appimage: ghcr.io/concrnt/concrnt:v1.10.28
   electorimage: ghcr.io/concrnt/k8s-elector:v1.10.24
   webimage: ghcr.io/concrnt/concrnt-web:main
 
