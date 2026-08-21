@@ -17,7 +17,7 @@ observability:
 
 concrnt2:
   appimage: ghcr.io/concrnt/concrnt:v1.10.29
-  electorimage: ghcr.io/concrnt/k8s-elector:v1.10.28
+  electorimage: ghcr.io/concrnt/k8s-elector:v1.10.29
   webimage: ghcr.io/concrnt/concrnt-web:main
 
   servicetype: ClusterIP
