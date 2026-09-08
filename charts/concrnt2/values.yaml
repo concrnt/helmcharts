@@ -48,14 +48,6 @@ profile:
   maintainerName: changeme
   maintainerEmail: changeme@example.com
 
-search:
-  enabled: false
-  image: ghcr.io/concrnt/cc-search:v0.1.2
-  useSecret: false
-  meilisearchKey: "concrnt-meilisearch"
-  meilisearchUrl: "http://meilisearch:7700"
-  meilisearchIdx: "concrnt"
-
 mediaserver:
   enabled: false
   useSecret: false
@@ -139,9 +131,3 @@ redis:
 memcached:
   enabled: true
   createExporter: false
-
-meilisearch:
-  enabled: false
-  useSecret: false
-  image: docker.io/getmeili/meilisearch:prototype-japanese-13
-  storage: "1Gi"

@@ -62,12 +62,6 @@ data:
         path: /image
         preservePath: true
 {{- end }}
-{{- if .Values.search.enabled }}
-      - name: net.concrnt.search
-        host: cc-search
-        port: 8000
-        path: /search
-{{- end }}
 {{- if .Values.activitypub2.enabled }}
       - name: net.concrnt.activitypub
         host: activitypub
