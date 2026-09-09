@@ -508,6 +508,16 @@ entries:
   concrnt2:
   - apiVersion: v2
     appVersion: 2.0.0
+    created: "2026-09-09T14:04:40.419208998Z"
+    description: A Helm chart for concrnt v2
+    digest: 9a636f404e94b4a0d9ff578681d0a15ca9f9eb1d88525f650d90554655235326
+    icon: https://square.concrnt.net/assets/Concrnt-Logo-Circle.png
+    name: concrnt2
+    urls:
+    - https://github.com/concrnt/helmcharts/releases/download/concrnt2-0.2.7/concrnt2-0.2.7.tgz
+    version: 0.2.7
+  - apiVersion: v2
+    appVersion: 2.0.0
     created: "2026-09-08T11:12:48.566107115Z"
     description: A Helm chart for concrnt v2
     digest: 636458730ab857137f0f67977b614c24658ed53d1270e30a3533751f2d63a240
@@ -887,4 +897,4 @@ entries:
     urls:
     - https://github.com/concrnt/helmcharts/releases/download/concrnt2-migration-0.0.1/concrnt2-migration-0.0.1.tgz
     version: 0.0.1
-generated: "2026-09-08T11:12:48.566254259Z"
+generated: "2026-09-09T14:04:40.727754905Z"
