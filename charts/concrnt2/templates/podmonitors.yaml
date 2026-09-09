@@ -12,7 +12,7 @@ spec:
     matchLabels:
       name: concrnt2
   podMetricsEndpoints:
-    - port: web
+    - port: internal
 
 ---
 # hyperproxy

@@ -1,6 +1,7 @@
 # All concrnt2 pods serve the public API on :8000 and can be scaled freely
 # when cluster is enabled. :8001 is the internal (operational) listener:
-# /health and /ready probes plus the replica-to-replica coordination API.
+# /health and /ready probes, the Prometheus /metrics endpoint, and the
+# replica-to-replica coordination API.
 # The pod whose elector sidecar holds the Lease runs the singleton workers
 # (federation subscriber, chunkline cache updater, web push reactor).
 # Ports 8001/8002 are cluster-internal — never expose them via an Ingress.
