@@ -897,4 +897,16 @@ entries:
     urls:
     - https://github.com/concrnt/helmcharts/releases/download/concrnt2-migration-0.0.1/concrnt2-migration-0.0.1.tgz
     version: 0.0.1
-generated: "2026-09-09T14:04:40.727754905Z"
+  webhook-relay:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-09-12T07:16:51.881851863Z"
+    description: A Helm chart for concrnt webhook-relay (webhook -> concrnt v2 timeline
+      bridge)
+    digest: ae93273286ff934e85ef99f363b0b9468dbce1f1be0e2e6556d98f7fd2ddf9e4
+    icon: https://square.concrnt.net/assets/Concrnt-Logo-Circle.png
+    name: webhook-relay
+    urls:
+    - https://github.com/concrnt/helmcharts/releases/download/webhook-relay-0.1.0/webhook-relay-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-09-12T07:16:51.881924981Z"
