@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: "latest"
+description: A Helm chart for concrnt webhook-relay (webhook -> concrnt v2 timeline bridge)
+name: webhook-relay
+version: 0.1.0
+icon: https://square.concrnt.net/assets/Concrnt-Logo-Circle.png

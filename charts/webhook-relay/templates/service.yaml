@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webhook-relay
+  labels:
+    name: webhook-relay
+{{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: webhook-relay
+  type: {{ .Values.service.type }}

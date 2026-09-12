@@ -1,0 +1,46 @@
+# github.com/concrnt/webhook-relay
+image: ghcr.io/concrnt/webhook-relay:latest
+replicas: 1
+
+concrnt:
+  # 投稿先ドメイン(FQDN)。非TLS環境では http://host:8000 のようにスキーム付きでも可
+  domain: example.tld
+  # 省略可。指定するとprivatekeyから導出したCCIDとの一致を起動時に検証する
+  ccid: ""
+  # 投稿主体アカウントの秘密鍵(64桁hex)
+  privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# true時はConfigMapにprivatekeyを出力せず、Secret webhook-relay-secret の
+# PRIVATE_KEY キーを環境変数として読む(欠落は起動時エラーで検出される)
+useSecret: false
+
+# 受け付けるwebhookの一覧。各エントリはそのままconfig.yamlのwebhooks[]に出力される
+# (path / timelines / schema / profileOverride / template)
+webhooks:
+  - path: /example
+    # 投稿先タイムラインのcckv URI
+    timelines:
+      - "cckv://con1example/concrnt.world/profiles/main/home-timeline"
+    # 省略時は https://schema.concrnt.world/m/markdown.json
+    schema: ""
+    profileOverride:
+      username: "webhook example"
+      avatar: "https://square.concrnt.net/assets/Concrnt-Logo-Circle.png"
+      description: "webhook example"
+      link: "https://github.com/concrnt/webhook-relay"
+    # Goのtext/template形式。.body にリクエストJSON、.headers に小文字化したヘッダが入る
+    template: |
+      hi im webhook {{ .body.title }} :
+      {{ .body.text }}
+
+service:
+  type: ClusterIP
+  port: 80
+  # MetalLBのIP固定(metallb.universe.tf/loadBalancerIPs)など
+  annotations: {}
+
+resources:
+  requests:
+    memory: 32Mi
+  limits:
+    memory: 64Mi
