@@ -31,6 +31,22 @@ spec:
     - port: web
 {{ end }}
 ---
+# activitypub (v2ブリッジ)。/metricsはコアのproxyに転送されないので、podのwebポートを直接scrapeする
+{{ if .Values.activitypub2.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-activitypub
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: activitypub
+  podMetricsEndpoints:
+    - port: web
+{{ end }}
+---
 # postgres
 {{ if .Values.postgres.createExporter }}
 apiVersion: monitoring.coreos.com/v1
