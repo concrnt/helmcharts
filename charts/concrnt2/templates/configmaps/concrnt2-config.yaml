@@ -73,6 +73,12 @@ data:
           - .well-known/host-meta
         preservePath: true
 {{- end }}
+{{- if .Values.search.enabled }}
+      - name: net.concrnt.search
+        host: cc-search
+        port: 8000
+        path: /search
+{{- end }}
       - name: world.concrnt.web
         host: world-app
         port: 80

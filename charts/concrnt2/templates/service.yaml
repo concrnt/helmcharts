@@ -162,3 +162,35 @@ spec:
     name: activitypub
   type: ClusterIP
 {{- end }}
+
+---
+{{- if .Values.search.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: cc-search
+spec:
+  ports:
+  - port: 8000
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: cc-search
+  type: ClusterIP
+{{- end }}
+
+---
+{{- if .Values.meilisearch.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: meilisearch
+spec:
+  ports:
+  - port: 7700
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: meilisearch
+  type: ClusterIP
+{{- end }}

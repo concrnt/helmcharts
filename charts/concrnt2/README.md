@@ -48,3 +48,25 @@ concrnt2:
 cluster を無効 (デフォルト) にした場合はサイドカーや RBAC は作られず、
 従来どおりの単一レプリカ構成になります。この場合も /health・/ready は
 :8001 で提供されるため、cluster 対応版以降のイメージが必要です。
+
+## タイムライン内検索 (cc-search + meilisearch)
+
+```yaml
+search:
+  enabled: true
+  useSecret: true
+meilisearch:
+  enabled: true
+  useSecret: true
+```
+
+- cc-search は concrnt 本体の CIP-16 replication API (`net.concrnt.core.replication`) を
+  system サービスアカウントで追従して meilisearch に索引を作り、`/search` 配下で
+  `net.concrnt.search.timeline` (`/search/timeline{?uri,q,limit,offset}`) を提供します。
+  本体は replication API を持つバージョン (v1.11.6 以降) が必要です。
+- 追従位置は redis (`v2-redis`) の `ccsearch:replication-cursor` に保存されます。
+- `search.useSecret: true` のときは Secret `search2-secret` に `CONCRNT_PRIVATE_KEY`
+  (concrnt 本体と同じ秘密鍵) と `MEILISEARCH_KEY` を、`meilisearch.useSecret: true` のときは
+  Secret `meilisearch-secret` に `MEILI_MASTER_KEY` を入れてください。
+- meilisearch のデータは volumeClaimTemplates の PVC (`meilisearch-data-meilisearch-0`) に残ります。
+  索引を作り直すときは redis のカーソルキーを消して cc-search を再起動してください。

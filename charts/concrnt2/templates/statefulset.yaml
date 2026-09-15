@@ -101,3 +101,48 @@ spec:
         requests:
           storage: {{ .Values.redis.storage }}
 {{- end }}
+
+---
+{{- if .Values.meilisearch.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: meilisearch
+spec:
+  serviceName: meilisearch
+  replicas: 1
+  selector:
+    matchLabels:
+      name: meilisearch
+  template:
+    metadata:
+      labels:
+        name: meilisearch
+    spec:
+      containers:
+      - name: meilisearch
+        image: {{ .Values.meilisearch.image }}
+        ports:
+          - name: web
+            containerPort: 7700
+{{- if .Values.meilisearch.useSecret }}
+        envFrom:
+          - secretRef:
+              name: meilisearch-secret
+{{- else }}
+        env:
+          - name: MEILI_MASTER_KEY
+            value: {{ .Values.search.meilisearchKey | quote }}
+{{- end }}
+        volumeMounts:
+          - name: meilisearch-data
+            mountPath: /meili_data
+  volumeClaimTemplates:
+  - metadata:
+      name: meilisearch-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.meilisearch.storage }}
+{{- end }}
