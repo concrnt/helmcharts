@@ -149,5 +149,5 @@ meilisearch:
   enabled: false
   # true なら MEILI_MASTER_KEY を Secret meilisearch-secret から読む
   useSecret: false
-  image: docker.io/getmeili/meilisearch:v1.16
+  image: docker.io/getmeili/meilisearch:v1.53
   storage: "1Gi"
