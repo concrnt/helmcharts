@@ -55,7 +55,7 @@ profile:
 
 search:
   enabled: false
-  image: ghcr.io/concrnt/cc-search:v0.1.2
+  image: ghcr.io/concrnt/cc-search:v0.2.0
   useSecret: false
   meilisearchKey: "concrnt-meilisearch"
   meilisearchUrl: "http://meilisearch:7700"
