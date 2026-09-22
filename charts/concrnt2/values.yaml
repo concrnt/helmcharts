@@ -92,19 +92,6 @@ activitypub2:
   databaseUrl: "postgres://postgres:postgres@v2db:5432/concrnt"
   redisUrl: "redis://v2-redis:6379"
 
-# タイムライン内全文検索モジュール(cc-search)。concrnt 本体が CIP-16 replication
-# (net.concrnt.core.replication) を提供するバージョンであること。meilisearch も併せて有効にする
-search:
-  enabled: false
-  # true なら CONCRNT_PRIVATE_KEY / MEILISEARCH_KEY を Secret search2-secret(同名キー)から読む。
-  # サーバー秘密鍵は concrnt2-secret(secret.yaml 形式)から流用できないので別途登録すること
-  useSecret: false
-  image: ghcr.io/concrnt/cc-search:v0.2.0
-  meilisearchUrl: "http://meilisearch:7700"
-  meilisearchKey: "concrnt-meilisearch"
-  # v1 の索引(concrnt)とは形が違うので別名にする。<idx>_records も併せて作られる
-  meilisearchIdx: "concrnt2"
-
 legal:
   tos: ""
   registerTemplate: |
@@ -152,10 +139,3 @@ redis:
 memcached:
   enabled: true
   createExporter: false
-
-meilisearch:
-  enabled: false
-  # true なら MEILI_MASTER_KEY を Secret meilisearch-secret から読む
-  useSecret: false
-  image: docker.io/getmeili/meilisearch:v1.54
-  storage: "1Gi"
