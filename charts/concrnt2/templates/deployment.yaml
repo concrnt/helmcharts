@@ -44,6 +44,14 @@ spec:
             port: internal
           initialDelaySeconds: 3
           periodSeconds: 10
+{{- if .Values.concrnt2.awsSecret }}
+        # for running conctl op gc-commitlog --backup s3://... by hand inside the pod
+        env:
+          - name: AWS_CONFIG_FILE
+            value: /etc/concrnt/aws/config
+          - name: AWS_SHARED_CREDENTIALS_FILE
+            value: /etc/concrnt/aws/credentials
+{{- end }}
         volumeMounts:
           - name: concrnt2-config
             mountPath: /etc/concrnt/config
@@ -51,6 +59,11 @@ spec:
           - name: concrnt-static
             mountPath: /etc/concrnt/static
             readOnly: true
+{{- if .Values.concrnt2.awsSecret }}
+          - name: concrnt2-aws
+            mountPath: /etc/concrnt/aws
+            readOnly: true
+{{- end }}
 {{- if .Values.concrnt2.cluster.enabled }}
       - name: elector
         image: {{ .Values.concrnt2.electorimage }}
@@ -84,6 +97,11 @@ spec:
         - name: concrnt-static
           configMap:
             name: concrnt-static
+{{- if .Values.concrnt2.awsSecret }}
+        - name: concrnt2-aws
+          secret:
+            secretName: {{ .Values.concrnt2.awsSecret }}
+{{- end }}
 {{- if .Values.concrnt2.useSecret }}
         - name: concrnt2-config
           projected:

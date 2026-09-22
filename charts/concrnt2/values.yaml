@@ -39,6 +39,14 @@ concrnt2:
   # secret.yamlに必ずprivatekeyを含めること(欠落は起動時panicで検出される)
   useSecret: false
 
+  # conctl op gc-commitlog --backup s3://... 等をpod内で手動実行(kubectl exec)する
+  # ためのAWS設定。Secret名を指定すると、そのキー config / credentials を
+  # /etc/concrnt/aws にマウントし、AWS_CONFIG_FILE / AWS_SHARED_CREDENTIALS_FILE で
+  # 指す(~/.aws/config・~/.aws/credentials と同じ書式。S3互換ストアは config 側の
+  # endpoint_url、必要なら request_checksum_calculation = when_required)。
+  # 空ならマウントしない
+  awsSecret: ""
+
 profile:
   nickname: concrnt-domain
   description: domain description
