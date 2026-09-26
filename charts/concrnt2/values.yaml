@@ -47,6 +47,22 @@ concrnt2:
   # 空ならマウントしない
   awsSecret: ""
 
+  # /.well-known/<name> で返す静的ドキュメント(concrnt config の
+  # additionalWellKnown にそのまま渡す)。type は string(text/plain) か
+  # json(application/json)。json の value は YAML マッピングでも JSON 文字列でもよい。
+  # 例:
+  #   additionalWellKnown:
+  #     my-service:
+  #       type: string
+  #       value: "hello"
+  #     my-json:
+  #       type: json
+  #       value:
+  #         links:
+  #           - rel: self
+  #             href: https://example.com/
+  additionalWellKnown: {}
+
 profile:
   nickname: concrnt-domain
   description: domain description

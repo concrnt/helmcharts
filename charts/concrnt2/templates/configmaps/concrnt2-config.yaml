@@ -42,6 +42,11 @@ data:
       themeColor: {{ .Values.profile.themeColor | quote }}
       maintainerName: {{ .Values.profile.maintainerName }}
       maintainerEmail: {{ .Values.profile.maintainerEmail }}
+{{- with .Values.concrnt2.additionalWellKnown }}
+
+    additionalWellKnown:
+{{ toYaml . | indent 6 }}
+{{- end }}
 
     services:
 {{- if .Values.mediaserver.enabled }}

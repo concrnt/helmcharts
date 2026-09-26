@@ -20,6 +20,26 @@ legacy パスのプロキシは含まれないので、v1 を退役させてか�
 volumeClaimTemplates が作った PVC (`postgres-varlib-v2db-0` /
 `redis-data-v2-redis-0`) にあり、これらは Helm 管理外なのでそのまま残ります。
 
+## 追加の .well-known
+
+`concrnt2.additionalWellKnown` に書いた内容がそのまま concrnt の config
+(`additionalWellKnown`) に渡され、`/.well-known/<name>` で返されます
+(additionalWellKnown に対応した concrnt が必要です)。
+
+```yaml
+concrnt2:
+  additionalWellKnown:
+    my-service:
+      type: string        # text/plain
+      value: "hello"
+    my-json:
+      type: json          # application/json
+      value:
+        links:
+          - rel: self
+            href: https://example.com/
+```
+
 ## マルチレプリカ (cluster モード)
 
 ```yaml
