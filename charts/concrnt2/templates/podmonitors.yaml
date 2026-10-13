@@ -47,6 +47,23 @@ spec:
     - port: web
 {{ end }}
 ---
+# atproto(Blueskyブリッジ)。/metricsはゲートウェイが転送しない(/atprotoと/xrpcのみ)ので
+# podのwebポートを直接scrapeする
+{{ if .Values.atproto.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: concrnt-atproto
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      name: atproto
+  podMetricsEndpoints:
+    - port: web
+{{ end }}
+---
 # postgres
 {{ if .Values.postgres.createExporter }}
 apiVersion: monitoring.coreos.com/v1

@@ -1,0 +1,50 @@
+{{- if .Values.atproto.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atproto-config
+data:
+  config.yaml: |-
+    server:
+      port: 8010
+
+    database:
+      url: {{ .Values.atproto.databaseUrl | quote }}
+
+    redis:
+      url: {{ .Values.atproto.redisUrl | quote }}
+
+    concrnt:
+      ccid: {{ .Values.atproto.ccid | quote }}
+      domain: {{ .Values.concrnt2.fqdn | quote }}
+{{- if not .Values.atproto.useSecret }}
+      privateKey: {{ .Values.atproto.privatekey | quote }}
+{{- end }}
+{{- with .Values.atproto.postUrlTemplate }}
+      postUrlTemplate: {{ . | quote }}
+{{- end }}
+
+    atproto:
+      dataDir: /data
+{{- with .Values.atproto.plcDirectory }}
+      plcDirectory: {{ . | quote }}
+{{- end }}
+{{- with .Values.atproto.relays }}
+      relays:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.atproto.jetstream }}
+      jetstream: {{ . | quote }}
+{{- end }}
+{{- with .Values.atproto.appviewUrl }}
+      appview:
+        url: {{ . | quote }}
+{{- end }}
+{{- with .Values.atproto.firehoseRetentionHours }}
+      firehoseRetentionHours: {{ . }}
+{{- end }}
+{{- if not .Values.atproto.useSecret }}
+      masterRotationKey: {{ .Values.atproto.masterRotationKey | quote }}
+      keyEncryptionKey: {{ .Values.atproto.keyEncryptionKey | quote }}
+{{- end }}
+{{- end }}

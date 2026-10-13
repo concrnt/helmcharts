@@ -78,6 +78,22 @@ data:
           - .well-known/host-meta
         preservePath: true
 {{- end }}
+{{- if .Values.atproto.enabled }}
+      # 管理API(認証あり)と公開PDS面(認証なし)はnoAuthが異なるので2エントリ(同じhost:port)
+      - name: world.concrnt.atproto
+        host: atproto
+        port: 8010
+        paths:
+          - /atproto
+        preservePath: true
+      - name: world.concrnt.atproto.pds
+        host: atproto
+        port: 8010
+        paths:
+          - /xrpc
+        preservePath: true
+        noAuth: true
+{{- end }}
       - name: world.concrnt.web
         host: world-app
         port: 80

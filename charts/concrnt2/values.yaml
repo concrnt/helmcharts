@@ -108,6 +108,53 @@ activitypub2:
   databaseUrl: "postgres://postgres:postgres@v2db:5432/concrnt"
   redisUrl: "redis://v2-redis:6379"
 
+# atproto(Bluesky)ブリッジ (github.com/concrnt/atproto)
+# 1ポート(8010)で管理API(/atproto・認証あり)と公開PDS面(/xrpc・認証なし)を
+# 配信し、どちらもconcrnt2ゲートウェイのservicesに登録して経由させる(ブリッジの
+# ポートを直接公開してはいけない: 管理APIはゲートウェイが付けるcc-requesterを信頼する)。
+# PDSのserviceEndpointはconcrnt2.fqdnそのものなので専用ドメインは不要。
+# carstore/blob/firehoseログを/dataに持つためStatefulSet+PVCでデプロイする
+atproto:
+  enabled: false
+  # activitypub2.useSecretと同じprojected方式: ConfigMapに加えてSecret atproto-secretを
+  # 同じconfigディレクトリに重ねる。Secretのキーはsecret.yaml(config.yamlより後に読まれて
+  # 深いマージで上書きされる)で、秘匿値だけを部分YAMLで書く:
+  #   concrnt: {privateKey: ...}
+  #   atproto: {masterRotationKey: ..., keyEncryptionKey: ...}
+  # useSecret時はConfigMap側config.yamlにこれら3値を出力しない(下のプレースホルダが
+  # 誤って使われる事故防止)ので、Secretに必ず3つとも含めること(欠落は起動時エラー)
+  useSecret: false
+  image: ghcr.io/concrnt/atproto:latest
+  # ブリッジ用サービスアカウント(conctl operation create-account で作成)。
+  # atprotoブリッジはccidを鍵から導出しないので両方書く
+  ccid: con1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  # 全ブリッジDIDのPLC rotation key(K256秘密鍵・multibaseかhex)。漏洩すると全アカウントの
+  # DIDを乗っ取れるので本番はuseSecret推奨
+  masterRotationKey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  # アカウント毎の署名鍵を保存時に暗号化する鍵(32バイトhex)。変更すると既存の鍵が読めなくなる
+  keyEncryptionKey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  # URL形式のみ。テーブルは全てat_プレフィックスなのでv2コアとDBを共有できる
+  databaseUrl: "postgres://postgres:postgres@v2db:5432/concrnt"
+  # 必ずv2コアと同じRedis(イベントをPSUBSCRIBEで購読する)
+  redisUrl: "redis://v2-redis:6379"
+  # 300グラフェン超過時にBluesky側へ載せる元投稿パーマリンク。{uri}がcckv URIに置換される
+  postUrlTemplate: "https://world.concrnt.net/post?uri={uri}"
+  # carstore / blob / firehoseイベントログの永続ボリューム
+  storage: "4Gi"
+  # 以下は空ならブリッジ既定値(plc.directory / bsky.network / jetstream2.us-east /
+  # public.api.bsky.app / 72h)
+  plcDirectory: ""
+  relays: []
+  jetstream: ""
+  appviewUrl: ""
+  firehoseRetentionHours: 0
+  resources:
+    requests:
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+
 legal:
   tos: ""
   registerTemplate: |

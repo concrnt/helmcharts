@@ -162,3 +162,23 @@ spec:
     name: activitypub
   type: ClusterIP
 {{- end }}
+
+---
+
+{{- if .Values.atproto.enabled }}
+# クラスタ内部専用(ゲートウェイのservices経由でのみ到達させる)
+apiVersion: v1
+kind: Service
+metadata:
+  name: atproto
+  labels:
+    name: atproto
+spec:
+  ports:
+  - port: 8010
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: atproto
+  type: ClusterIP
+{{- end }}

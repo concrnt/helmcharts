@@ -101,3 +101,74 @@ spec:
         requests:
           storage: {{ .Values.redis.storage }}
 {{- end }}
+
+---
+
+{{- if .Values.atproto.enabled }}
+# atproto(Bluesky)ブリッジ。/dataにcarstore・blob・firehoseイベントログを持つので
+# StatefulSet(replicas固定1: repo書き込みとfirehose順序を単一プロセスが担う)
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: atproto
+spec:
+  replicas: 1
+  serviceName: atproto
+  selector:
+    matchLabels:
+      name: atproto
+  template:
+    metadata:
+      labels:
+        name: atproto
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps/atproto-config.yaml") . | sha256sum }}
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: atproto
+        image: {{ .Values.atproto.image }}
+        ports:
+          - name: web
+            containerPort: 8010
+        env:
+          # ディレクトリ指定: config.yaml(ConfigMap)+secret.yaml(Secret)を名前順に深いマージ
+          - name: CONFIG_PATH
+            value: /etc/concrnt/atproto/config
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: web
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+{{ toYaml .Values.atproto.resources | indent 10 }}
+        volumeMounts:
+          - name: atproto-config
+            mountPath: /etc/concrnt/atproto/config
+            readOnly: true
+          - name: atproto-data
+            mountPath: /data
+      volumes:
+{{- if .Values.atproto.useSecret }}
+        - name: atproto-config
+          projected:
+            sources:
+              - configMap:
+                  name: atproto-config
+              - secret:
+                  name: atproto-secret
+{{- else }}
+        - name: atproto-config
+          configMap:
+            name: atproto-config
+{{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: atproto-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.atproto.storage }}
+{{- end }}
