@@ -9,3 +9,7 @@ data:
     {{ .Values.legal.registerTemplate | nindent 4 }}
   code-of-conduct.txt: |-
     {{ .Values.legal.codeOfConduct | nindent 4 }}
+{{- with .Values.legal.robotsTxt }}
+  robots.txt: |-
+    {{ . | nindent 4 }}
+{{- end }}

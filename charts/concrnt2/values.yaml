@@ -157,6 +157,12 @@ atproto:
 
 legal:
   tos: ""
+  # /robots.txt の本文(/etc/concrnt/static/robots.txt)。空ならファイルを置かず
+  # /robots.txt は 404。concrnt crawler に索引されたくない場合の例:
+  #   robotsTxt: |
+  #     User-agent: concrnt-crawler
+  #     Disallow: /
+  robotsTxt: ""
   registerTemplate: |
     {
       "type": "object",
