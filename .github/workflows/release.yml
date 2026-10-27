@@ -37,7 +37,7 @@ jobs:
 
       - name: Run chart-releaser
         if: steps.changes.outputs.chart == 'true'
-        uses: helm/chart-releaser-action@v1.7.0
+        uses: helm/chart-releaser-action@v1.8.0
         with:
           skip_existing: true
         env:
