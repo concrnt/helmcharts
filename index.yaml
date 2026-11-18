@@ -508,6 +508,16 @@ entries:
   concrnt2:
   - apiVersion: v2
     appVersion: 2.0.0
+    created: "2026-11-18T16:08:52.383972292Z"
+    description: A Helm chart for concrnt v2
+    digest: 6b4eb54acfe1a99ed85b1579ae0bd6d485e71ac638b85839fd05829665a0a2c6
+    icon: https://square.concrnt.net/assets/Concrnt-Logo-Circle.png
+    name: concrnt2
+    urls:
+    - https://github.com/concrnt/helmcharts/releases/download/concrnt2-0.2.15/concrnt2-0.2.15.tgz
+    version: 0.2.15
+  - apiVersion: v2
+    appVersion: 2.0.0
     created: "2026-10-14T09:43:24.273061266Z"
     description: A Helm chart for concrnt v2
     digest: c4a305f78eadf18e7f99daaf3b3e0b487a7d83eb981ea11b4154bd702bffbf39
@@ -979,4 +989,4 @@ entries:
     urls:
     - https://github.com/concrnt/helmcharts/releases/download/webhook-relay-0.1.0/webhook-relay-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-14T09:43:24.27325965Z"
+generated: "2026-11-18T16:08:52.6097442Z"
