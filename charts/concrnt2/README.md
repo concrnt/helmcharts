@@ -59,10 +59,12 @@ concrnt2:
 - Lease を持つ Pod のサイドカーがリーダーとなり、その Pod だけが
   シングルトンワーカー (federation subscriber / chunkline cache updater /
   web push reactor) を実行します。
-- :8001 は internal (運用) リスナーです。/health・/ready のプローブと、
-  レプリカ間の購読協調 API (リーダーが各 Pod の :8001/internal/demand を
-  集約し、:8001/internal/subscriptions で応答) に使われます。
-- **:8001 と :8002 はクラスタ内部専用です。Ingress や LoadBalancer で
+- :8001 は internal (運用) リスナーです。/health・/ready のプローブと
+  Prometheus の /metrics に使われます。
+- :8003 はレプリカ間の購読協調 API です (リーダーが各 Pod の
+  :8003/internal/demand を集約し、:8003/internal/subscriptions で応答)。
+  cluster 有効時だけ開きます。協調 API を :8003 で提供する版以降のイメージが必要です。
+- **:8001・:8002・:8003 はクラスタ内部専用です。Ingress や LoadBalancer で
   公開しないでください。** 公開するのは Service `concrnt2` (:80 → :8000) のみです。
 
 cluster を無効 (デフォルト) にした場合はサイドカーや RBAC は作られず、

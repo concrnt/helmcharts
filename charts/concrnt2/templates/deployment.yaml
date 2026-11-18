@@ -1,10 +1,10 @@
 # All concrnt2 pods serve the public API on :8000 and can be scaled freely
 # when cluster is enabled. :8001 is the internal (operational) listener:
-# /health and /ready probes, the Prometheus /metrics endpoint, and the
-# replica-to-replica coordination API.
+# /health and /ready probes and the Prometheus /metrics endpoint. :8003 is
+# the replica-to-replica coordination API, open only when cluster is enabled.
 # The pod whose elector sidecar holds the Lease runs the singleton workers
 # (federation subscriber, chunkline cache updater, web push reactor).
-# Ports 8001/8002 are cluster-internal — never expose them via an Ingress.
+# Ports 8001/8002/8003 are cluster-internal — never expose them via an Ingress.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,6 +33,10 @@ spec:
             containerPort: 8000
           - name: internal
             containerPort: 8001
+{{- if .Values.concrnt2.cluster.enabled }}
+          - name: coordination
+            containerPort: 8003
+{{- end }}
         # /ready answers 503 with the startup phase until the migrations and
         # the rest of the initialization are done; liveness and readiness are
         # held off until then
@@ -92,7 +96,9 @@ spec:
               fieldRef:
                 fieldPath: status.podIP
           - name: ADVERTISE_URL
-            value: "http://$(POD_IP):8001"
+            value: "http://$(POD_IP):8003"
+          - name: PEER_PORT
+            value: "8003"
           - name: HEADLESS_SERVICE
             value: "concrnt2-headless"
         livenessProbe:

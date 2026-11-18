@@ -30,9 +30,9 @@ spec:
   selector:
     name: concrnt2
   ports:
-    - name: internal
-      port: 8001
-      targetPort: internal
+    - name: coordination
+      port: 8003
+      targetPort: coordination
 {{- end }}
 
 ---
