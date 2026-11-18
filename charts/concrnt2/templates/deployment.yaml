@@ -33,6 +33,15 @@ spec:
             containerPort: 8000
           - name: internal
             containerPort: 8001
+        # /ready answers 503 with the startup phase until the migrations and
+        # the rest of the initialization are done; liveness and readiness are
+        # held off until then
+        startupProbe:
+          httpGet:
+            path: /ready
+            port: internal
+          periodSeconds: {{ .Values.concrnt2.startupProbe.periodSeconds }}
+          failureThreshold: {{ .Values.concrnt2.startupProbe.failureThreshold }}
         readinessProbe:
           httpGet:
             path: /ready
@@ -42,7 +51,6 @@ spec:
           httpGet:
             path: /health
             port: internal
-          initialDelaySeconds: 3
           periodSeconds: 10
 {{- if .Values.concrnt2.awsSecret }}
         # for running conctl op gc-commitlog --backup s3://... by hand inside the pod

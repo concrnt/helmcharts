@@ -69,6 +69,16 @@ cluster を無効 (デフォルト) にした場合はサイドカーや RBAC �
 従来どおりの単一レプリカ構成になります。この場合も /health・/ready は
 :8001 で提供されるため、cluster 対応版以降のイメージが必要です。
 
+### 起動プローブ
+
+concrnt は起動時にマイグレーションを実行し、初期化が終わるまで `:8001/ready` は
+503 `{"status":"starting","phase":"..."}` を返します (phase は
+`schema-migration` → `data-migration` → `wiring`)。
+startupProbe (`/ready`) が通るまでは liveness / readiness が止まるので、
+マイグレーションが長引いても再起動されません。待つ上限は
+`concrnt2.startupProbe.periodSeconds × failureThreshold` (既定 5 秒 × 360 = 30 分)
+です。
+
 ## atproto (Bluesky) ブリッジ
 
 [concrnt/atproto](https://github.com/concrnt/atproto) を `atproto.enabled: true`

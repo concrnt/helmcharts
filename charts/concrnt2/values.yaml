@@ -27,6 +27,13 @@ concrnt2:
   layer: concrnt-mainnet
   debug: false
 
+  # 起動時のマイグレーションと初期化が終わるまで /ready は 503 を返し、startupProbe は失敗し続ける。
+  # periodSeconds × failureThreshold を超えると kubelet がコンテナを再起動するので、
+  # 大きなマイグレーションを含むバージョンへ上げるときは余裕を持たせること(既定 30 分)
+  startupProbe:
+    periodSeconds: 5
+    failureThreshold: 360
+
   replicas: 1
   # cluster runs the k8s-elector sidecar next to every replica (leader
   # election via a coordination.k8s.io Lease + peer discovery via a headless
