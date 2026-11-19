@@ -508,6 +508,16 @@ entries:
   concrnt2:
   - apiVersion: v2
     appVersion: 2.0.0
+    created: "2026-11-19T14:20:28.75407417Z"
+    description: A Helm chart for concrnt v2
+    digest: a7ddfb4b75276dca517bdb63ea4c3d6ed39cf6a103734d55c8f38d04c5229526
+    icon: https://square.concrnt.net/assets/Concrnt-Logo-Circle.png
+    name: concrnt2
+    urls:
+    - https://github.com/concrnt/helmcharts/releases/download/concrnt2-0.2.17/concrnt2-0.2.17.tgz
+    version: 0.2.17
+  - apiVersion: v2
+    appVersion: 2.0.0
     created: "2026-11-18T16:30:47.741396673Z"
     description: A Helm chart for concrnt v2
     digest: 89adefeea288276a28e37ccb69c9b22e9e7ef7b5a97d6cc722cc981491daf1d6
@@ -687,6 +697,16 @@ entries:
     - https://github.com/concrnt/helmcharts/releases/download/concrnt2-0.1.0/concrnt2-0.1.0.tgz
     version: 0.1.0
   concrnt2-migration:
+  - apiVersion: v2
+    appVersion: 2.0.0
+    created: "2026-11-19T14:20:28.910364177Z"
+    description: A Helm chart for concrnt
+    digest: 4f7f5fdbcd0fd3d869ed231dcbf823e87133ed7e0c24e26092493fc82b8769fa
+    icon: https://square.concrnt.net/assets/Concrnt-Logo-Circle.png
+    name: concrnt2-migration
+    urls:
+    - https://github.com/concrnt/helmcharts/releases/download/concrnt2-migration-0.0.31/concrnt2-migration-0.0.31.tgz
+    version: 0.0.31
   - apiVersion: v2
     appVersion: 2.0.0
     created: "2026-08-24T17:16:06.726747957Z"
@@ -999,4 +1019,4 @@ entries:
     urls:
     - https://github.com/concrnt/helmcharts/releases/download/webhook-relay-0.1.0/webhook-relay-0.1.0.tgz
     version: 0.1.0
-generated: "2026-11-18T16:30:47.741668143Z"
+generated: "2026-11-19T14:20:28.910743735Z"
