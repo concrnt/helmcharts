@@ -152,12 +152,23 @@ spec:
         ports:
           - name: web
             containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /web/index.html
+            port: 80
+          periodSeconds: 3
         livenessProbe:
           httpGet:
             path: /web/index.html
             port: 80
           initialDelaySeconds: 3
           periodSeconds: 3
+        # nginx stops listening as soon as it gets the stop signal, before the
+        # Service has dropped the pod; keep serving until it has
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "5"]
 
 ---
 
