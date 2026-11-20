@@ -132,3 +132,7 @@ firehose (`wss://<fqdn>/xrpc/com.atproto.sync.subscribeRepos`) は
 ゲートウェイの ReverseProxy を WebSocket で通ります。デプロイ後に疎通を
 確認してください。`observability.createPodMonitors` が有効なら
 ブリッジの `/metrics` を pod ポート直接で scrape する PodMonitor も作られます。
+
+## 注意
+
+- `additionalWellKnown` の json 型で値に短い 16 進(`0x...`)を含むときは、value を YAML マッピングではなく JSON 文字列で渡す。`toYaml` が無引用で出力し、整数として解釈されることがある。
