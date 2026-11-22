@@ -30,7 +30,7 @@ concrnt:
   configpaths: "" # "/etc/concrnt/config/config.yaml:/etc/concrnt/secret/config.yaml"
 
 concrnt2:
-  appimage: ghcr.io/concrnt/concrnt:v1.11.11
+  appimage: ghcr.io/concrnt/concrnt:v1.12.0
   webimage: ghcr.io/concrnt/world-app:2026.1122.0
 
   servicetype: ClusterIP
