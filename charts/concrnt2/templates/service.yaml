@@ -36,7 +36,7 @@ spec:
 {{- end }}
 
 ---
-
+{{- if not .Values.concrnt2.webHost }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -51,6 +51,7 @@ spec:
   selector:
     name: world-app
   type: ClusterIP
+{{- end }}
 
 ---
 
@@ -129,7 +130,7 @@ spec:
 {{- end }}
 
 ---
-{{- if .Values.hyperproxy.enabled }}
+{{- if and .Values.hyperproxy.enabled (not .Values.hyperproxy.host) }}
 kind: Service
 apiVersion: v1
 metadata:

@@ -16,7 +16,7 @@ spec:
 
 ---
 # hyperproxy
-{{ if .Values.hyperproxy.enabled }}
+{{ if and .Values.hyperproxy.enabled (not .Values.hyperproxy.host) }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:

@@ -131,7 +131,7 @@ spec:
 {{- end }}
 
 ---
-
+{{- if not .Values.concrnt2.webHost }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -169,6 +169,7 @@ spec:
           preStop:
             exec:
               command: ["sleep", "5"]
+{{- end }}
 
 ---
 
@@ -252,7 +253,7 @@ spec:
 {{- end }}
 
 ---
-{{ if .Values.hyperproxy.enabled }}
+{{ if and .Values.hyperproxy.enabled (not .Values.hyperproxy.host) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

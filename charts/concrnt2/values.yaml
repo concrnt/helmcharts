@@ -19,6 +19,10 @@ concrnt2:
   appimage: ghcr.io/concrnt/concrnt:v1.11.11
   electorimage: ghcr.io/concrnt/k8s-elector:v1.11.11
   webimage: ghcr.io/concrnt/world-app:2026.1122.0
+  # world-app を別の場所(複数のドメインで共有する別 namespace など)で動かして
+  # いるときの宛先(例 world-app.world-app.svc.cluster.local)。指定するとこの
+  # チャートは world-app を立てず、/ をこの host の :80 へ流す
+  webHost: ""
 
   servicetype: ClusterIP
   fqdn: example.tld
@@ -94,6 +98,10 @@ mediaserver:
 hyperproxy:
   enabled: true
   image: ghcr.io/concrnt/hyperproxy:v0.5.1
+  # hyperproxy を別の場所で動かしているときの宛先(例
+  # hyperproxy.hyperproxy.svc.cluster.local)。指定するとこのチャートは
+  # hyperproxy を立てず、/summary と /image をこの host の :8000 へ流す
+  host: ""
 
 # v2 ActivityPubブリッジ (github.com/concrnt/activitypub)
 # ブロック名はconcrnt2-migrationチャートと同じactivitypub2にしてあり、移行時の

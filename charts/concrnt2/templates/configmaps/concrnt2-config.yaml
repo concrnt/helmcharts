@@ -57,12 +57,12 @@ data:
 {{- end }}
 {{- if .Values.hyperproxy.enabled }}
       - name: world.concrnt.hyperproxy.summary
-        host: hyperproxy
+        host: {{ .Values.hyperproxy.host | default "hyperproxy" }}
         port: 8000
         path: /summary
         preservePath: true
       - name: world.concrnt.hyperproxy.image
-        host: hyperproxy
+        host: {{ .Values.hyperproxy.host | default "hyperproxy" }}
         port: 8000
         path: /image
         preservePath: true
@@ -95,7 +95,7 @@ data:
         noAuth: true
 {{- end }}
       - name: world.concrnt.web
-        host: world-app
+        host: {{ .Values.concrnt2.webHost | default "world-app" }}
         port: 80
         path: /
         preservePath: true
