@@ -18,7 +18,7 @@ observability:
 concrnt2:
   appimage: ghcr.io/concrnt/concrnt:v1.11.11
   electorimage: ghcr.io/concrnt/k8s-elector:v1.11.11
-  webimage: ghcr.io/concrnt/world-app:2026.1120.1
+  webimage: ghcr.io/concrnt/world-app:2026.1122.0
 
   servicetype: ClusterIP
   fqdn: example.tld
