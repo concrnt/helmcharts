@@ -5,6 +5,10 @@ server:
   dsn: "host=v2db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
   redisAddr: "v2-redis:6379"
   memcachedAddr: "v2-memcached:11211"
+  # concrnt が 1 Pod あたりに張る DB 接続の上限(0 なら concrnt の既定 16。この設定を
+  # 知らない古い concrnt は無視する)。半分までがトランザクションに使われる。
+  # replica 数 × この値が DB の max_connections に収まるようにする
+  postgresMaxConns: 0
   captchaSitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
   captchaSecret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
   vapidPublicKey: ""

@@ -20,6 +20,9 @@ data:
 
     backends:
       postgresDsn: {{ .Values.server.dsn }}
+{{- with .Values.server.postgresMaxConns }}
+      postgresMaxConns: {{ . }}
+{{- end }}
       gatewayAddr: http://concrnt2
       redisAddr: {{ .Values.server.redisAddr }}
       memcachedAddr: {{ .Values.server.memcachedAddr }}
