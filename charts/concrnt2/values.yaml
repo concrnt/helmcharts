@@ -217,13 +217,16 @@ postgres:
   storage: "1Gi"
   mountPath: "/var/lib/postgresql"
   createExporter: false
+  exporterImage: quay.io/prometheuscommunity/postgres-exporter:v0.21.1
   useSecret: false
 
 redis:
   enabled: true
   storage: "1Gi"
   createExporter: false
+  exporterImage: docker.io/oliver006/redis_exporter:v1.98.0
 
 memcached:
   enabled: true
   createExporter: false
+  exporterImage: docker.io/prom/memcached-exporter:v0.18.0

@@ -196,7 +196,7 @@ spec:
             containerPort: 11211
 {{- if .Values.memcached.createExporter }}
       - name: memcached-exporter
-        image: docker.io/prom/memcached-exporter:v0.6.0
+        image: {{ .Values.memcached.exporterImage }}
         ports:
           - name: memcached-expr
             containerPort: 9150
