@@ -224,7 +224,7 @@ redis:
   enabled: true
   storage: "1Gi"
   createExporter: false
-  exporterImage: docker.io/oliver006/redis_exporter:v1.98.0
+  exporterImage: docker.io/oliver006/redis_exporter:v1.99.0
 
 memcached:
   enabled: true
