@@ -22,7 +22,7 @@ observability:
 concrnt2:
   appimage: ghcr.io/concrnt/concrnt:v1.12.2
   electorimage: ghcr.io/concrnt/k8s-elector:v1.12.2
-  webimage: ghcr.io/concrnt/world-app:2026.1125.0
+  webimage: ghcr.io/concrnt/world-app:2026.1125.1
   # world-app を別の場所(複数のドメインで共有する別 namespace など)で動かして
   # いるときの宛先(例 world-app.world-app.svc.cluster.local)。指定するとこの
   # チャートは world-app を立てず、/ をこの host の :80 へ流す
