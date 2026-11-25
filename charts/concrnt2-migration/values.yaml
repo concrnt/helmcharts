@@ -31,7 +31,7 @@ concrnt:
 
 concrnt2:
   appimage: ghcr.io/concrnt/concrnt:v1.12.2
-  webimage: ghcr.io/concrnt/world-app:2026.1124.0
+  webimage: ghcr.io/concrnt/world-app:2026.1125.0
 
   servicetype: ClusterIP
   fqdn: example.tld
