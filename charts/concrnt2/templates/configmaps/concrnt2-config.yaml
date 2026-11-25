@@ -1,3 +1,4 @@
+{{- if not .Values.concrnt2.configMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -102,3 +103,4 @@ data:
         port: 80
         path: /
         preservePath: true
+{{- end }}

@@ -18,8 +18,10 @@ spec:
     metadata:
       labels:
         name: concrnt2
+{{- if not .Values.concrnt2.configMap }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmaps/concrnt2-config.yaml") . | sha256sum }}
+{{- end }}
     spec:
 {{- if .Values.concrnt2.cluster.enabled }}
       serviceAccountName: concrnt2
@@ -121,13 +123,13 @@ spec:
           projected:
             sources:
               - configMap:
-                  name: concrnt2-config
+                  name: {{ .Values.concrnt2.configMap | default "concrnt2-config" }}
               - secret:
                   name: concrnt2-secret
 {{- else }}
         - name: concrnt2-config
           configMap:
-            name: concrnt2-config
+            name: {{ .Values.concrnt2.configMap | default "concrnt2-config" }}
 {{- end }}
 
 ---

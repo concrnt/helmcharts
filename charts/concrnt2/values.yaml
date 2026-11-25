@@ -54,6 +54,12 @@ concrnt2:
   # secret.yamlに必ずprivatekeyを含めること(欠落は起動時panicで検出される)
   useSecret: false
 
+  # concrnt の config.yaml を持つ ConfigMap の名前。指定するとこのチャートは
+  # concrnt2-config を作らずにこれをマウントする(fqdn・services など config に
+  # 出していた値は使われない)。中身が変わっても pod は再起動しないので、
+  # kustomize の configMapGenerator などで名前に中身のハッシュを付けること
+  configMap: ""
+
   # conctl op gc-commitlog --backup s3://... 等をpod内で手動実行(kubectl exec)する
   # ためのAWS設定。Secret名を指定すると、そのキー config / credentials を
   # /etc/concrnt/aws にマウントし、AWS_CONFIG_FILE / AWS_SHARED_CREDENTIALS_FILE で

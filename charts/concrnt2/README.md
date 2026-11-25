@@ -40,6 +40,32 @@ concrnt2:
             href: https://example.com/
 ```
 
+## config を自分で書く
+
+`concrnt2.configMap` に ConfigMap の名前を指定すると、チャートは
+`concrnt2-config` を作らず、その ConfigMap を `/etc/concrnt/config` に
+マウントします(`useSecret` の Secret はこれまで通り重なります)。チャートが
+values から組み立てていた `fqdn` や `services` なども含めて、config.yaml を
+丸ごと自分で書きます。
+
+チャートは中身を知らないので、config を変えても pod は再起動しません。
+kustomize の `configMapGenerator` で作れば名前に中身のハッシュが付き、
+Deployment の参照も書き換わるので、変えるたびにロールアウトされます。
+
+```yaml
+# kustomization.yaml
+configMapGenerator:
+  - name: concrnt2-config
+    files:
+      - config.yaml
+```
+
+```yaml
+# values.yaml
+concrnt2:
+  configMap: concrnt2-config
+```
+
 ## マルチレプリカ (cluster モード)
 
 ```yaml
