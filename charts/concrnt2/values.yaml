@@ -20,7 +20,7 @@ observability:
   traceEndpoint: "alloy:4318"
 
 concrnt2:
-  appimage: ghcr.io/concrnt/concrnt:v1.12.3
+  appimage: ghcr.io/concrnt/concrnt:v1.12.4
   electorimage: ghcr.io/concrnt/k8s-elector:v1.12.3
   webimage: ghcr.io/concrnt/world-app:2026.1127.0
   # world-app を別の場所(複数のドメインで共有する別 namespace など)で動かして
