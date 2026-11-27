@@ -21,7 +21,7 @@ observability:
 
 concrnt2:
   appimage: ghcr.io/concrnt/concrnt:v1.12.4
-  electorimage: ghcr.io/concrnt/k8s-elector:v1.12.3
+  electorimage: ghcr.io/concrnt/k8s-elector:v1.12.4
   webimage: ghcr.io/concrnt/world-app:2026.1127.0
   # world-app を別の場所(複数のドメインで共有する別 namespace など)で動かして
   # いるときの宛先(例 world-app.world-app.svc.cluster.local)。指定するとこの
